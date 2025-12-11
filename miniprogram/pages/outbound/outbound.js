@@ -41,7 +41,9 @@ Page({
         loading: false,
 
         itemType: 'product', // 'product' | 'package'
-        rawOptions: {}
+        itemType: 'product', // 'product' | 'package'
+        rawOptions: {},
+        isLoggedIn: false // [New]
     },
 
     onLoad() {
@@ -49,9 +51,16 @@ Page({
     },
 
     onShow() {
+        // [Guest Mode] Check Login
+        const app = getApp()
+        if (!app.globalData.userInfo) {
+            this.setData({ isLoggedIn: false })
+            return
+        }
+
+        this.setData({ isLoggedIn: true })
         this.fetchOptions() // Always refresh options
 
-        const app = getApp()
         const params = app.globalData.outboundParams
 
         if (params) {

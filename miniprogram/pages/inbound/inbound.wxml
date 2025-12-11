@@ -1,4 +1,12 @@
 <view class="container p-4">
+  <block wx:if="{{!isLoggedIn}}">
+     <view class="flex flex-col items-center justify-center p-8 mt-20">
+        <van-icon name="lock" size="64px" color="#e5e7eb" />
+        <view class="text-gray-500 mt-4 text-center">请先前往【我的】页面登录</view>
+        <view class="text-gray-400 text-xs mt-2">登录后方可进行入库操作</view>
+     </view>
+  </block>
+  <block wx:else>
   
   <!-- Type Toggle -->
   <view class="segmented-control mb-4">
@@ -89,6 +97,7 @@
        <text>确认提交入库</text>
     </button>
   </view>
+  </block>
 </view>
 
 <!-- Pickers -->

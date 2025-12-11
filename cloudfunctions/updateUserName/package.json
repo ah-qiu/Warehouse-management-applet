@@ -1,0 +1,9 @@
+{
+  "name": "update-user-name",
+  "version": "1.0.0",
+  "description": "Update user display name",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

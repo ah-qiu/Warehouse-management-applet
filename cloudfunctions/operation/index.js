@@ -1,8 +1,18 @@
 // cloudfunctions/operation/index.js
 const cloud = require('wx-server-sdk')
+const crypto = require('crypto')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
+
+// SALT must match login function
+const SALT = 'WECHAT_MINI_PROGRAM_SALT_2025'
+
+function hashOpenId(openid) {
+    return crypto.createHmac('sha256', SALT)
+        .update(openid)
+        .digest('hex')
+}
 
 exports.main = async (event, context) => {
     const { action, data } = event
@@ -20,6 +30,16 @@ exports.main = async (event, context) => {
 
     try {
         const result = await db.runTransaction(async transaction => {
+            // [TRACEABILITY] Fetch Operator Info
+            let operatorName = '未命名用户'
+            const uidHash = hashOpenId(OPENID)
+
+            // Use Hash to find user
+            const userQuery = await transaction.collection('users').where({ uid_hash: uidHash }).get()
+            if (userQuery.data.length > 0) {
+                operatorName = userQuery.data[0].name || '未命名用户'
+            }
+
             // 1. Get Product info
             // For 'product', we match if item_type is 'product' OR missing (legacy)
             // For 'package', we match strict item_type: 'package'
@@ -64,8 +84,9 @@ exports.main = async (event, context) => {
                 nature: data.nature,
                 operate_date: data.date,
                 createdAt: db.serverDate(),
-                _openid: OPENID,
-                operator_name: data.operator || 'Admin',
+                _openid: OPENID, // System field, kept for cloud console access control if needed
+                uid_hash: uidHash, // [SECURE] Store hash for business logic
+                operator_name: operatorName, // [SECURE] Used fetched name
 
                 // Snapshot
                 current_stock_snapshot: action === 'in'

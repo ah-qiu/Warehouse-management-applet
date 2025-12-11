@@ -1,10 +1,35 @@
 <view class="container p-4">
+  <!-- 1. NOT LOGGED IN VIEW -->
+  <block wx:if="{{!isLoggedIn}}">
+    <view class="card flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-sm" style="min-height: 300px;">
+        <image class="w-20 h-20 mb-4" src="/images/Logo.png" mode="aspectFit"></image>
+        <view class="text-gray-800 font-bold text-lg mb-2">欢迎使用库存管理</view>
+        <view class="text-gray-500 text-sm mb-6 text-center">请先登录以同步数据并管理库存</view>
+        
+        <!-- Official Privacy Compliant Login Button -->
+        <button 
+           class="bg-green-600 text-white px-8 py-2 rounded-full font-medium active:opacity-90" 
+           hover-class="opacity-90"
+           bindtap="onLogin">
+           点击登录 / 注册
+        </button>
+        <view class="text-xs text-gray-400 mt-4">登录即代表同意《用户隐私协议》</view>
+    </view>
+  </block>
+
+  <!-- 2. LOGGED IN VIEW -->
+  <block wx:else>
   <!-- User Profile Card -->
   <view class="card profile-card flex items-center gap-4 mb-4">
-    <image class="avatar-img" src="/images/Logo.png" mode="aspectFill"></image>
+    <image class="avatar-img" src="/images/Logo.png" mode="aspectFill" bindtap="onEditName"></image>
     <view>
-      <view class="text-xl font-bold text-white">仓库管理员</view>
-      <view class="text-sm text-blue-100">{{companyName}}</view>
+      <view class="text-xl font-bold text-white flex items-center gap-2">
+        {{username || '微信用户'}} 
+        <van-icon name="edit" size="16px" bindtap="onEditName" />
+      </view>
+      <view class="text-sm text-blue-100 mt-1">
+        {{companyName}} | <text class="bg-blue-600 px-1 rounded">{{roleName || '加载中...'}}</text>
+      </view>
     </view>
   </view>
 
@@ -127,6 +152,7 @@
             <view class="flex items-center gap-3">
                <view class="icon-box bg-red-100 text-red-600">
                    <van-icon name="warning-o" size="18px" />
+                   <van-icon name="warning-o" size="18px" />
                </view>
                <view>
                    <view class="font-medium text-gray-800">库存预警设置</view>
@@ -150,5 +176,17 @@
             <van-icon name="arrow" color="#d1d5db" />
          </view>
        </view>
+  </block>
+
+  <!-- Logout Button -->
+  <view class="mt-6 px-4">
+    <button 
+      class="w-full py-3 bg-red-100 text-red-600 rounded-lg text-sm font-medium"
+      hover-class="bg-red-200"
+      bindtap="onLogout">
+      退出登录
+    </button>
+  </view>
+
   </block>
 </view>

@@ -105,3 +105,7 @@
 .text-white {
   color: #ffffff;
 }
+
+/* Login/Logout Buttons */
+.bg-green-600 { background-color: #16a34a; }
+.bg-red-200 { background-color: #fecaca; }

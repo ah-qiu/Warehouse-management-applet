@@ -6,3 +6,4 @@ npm-debug.log
 .idea/
 .vscode/
 *.log
+保存用户登录状态规范.md

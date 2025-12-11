@@ -1,5 +1,5 @@
 // pages/mine/mine.js
-const config = require('../../config');
+import config from '../../config';
 
 Page({
     data: {
@@ -13,6 +13,7 @@ Page({
         statsResult: null,
         showStats: false,
         isAdmin: false, // 权限状态
+        isLoggedIn: false, // [New] Login State
         itemTypeList: ['全部', '产品与材料', '包装物'],
         selectedItemType: '全部'
     },
@@ -22,16 +23,108 @@ Page({
     },
 
     onShow() {
-        // 鉴权逻辑：每次显示页面都检查一下（防止后台切前台状态变化）
         const app = getApp();
-        if (typeof app.globalData.isAdmin === 'boolean') {
-            this.setData({ isAdmin: app.globalData.isAdmin });
+        // Check if already logged in
+        if (app.globalData.userInfo) {
+            this.setData({ isLoggedIn: true });
+            this.updateUserInfo(app.globalData.userInfo);
         } else {
-            // 如果还未获取到结果，设置回调
-            app.globalData.authReadyCallback = (isAdmin) => {
-                this.setData({ isAdmin });
-            }
+            this.setData({ isLoggedIn: false, isAdmin: false });
         }
+    },
+
+    // [New] Manual Login Trigger
+    onLogin() {
+        const that = this;
+        wx.showModal({
+            title: '确认登录',
+            content: '登录后可进行入库、出库及查看详情操作',
+            confirmText: '确认登录',
+            confirmColor: '#16a34a',
+            success: (res) => {
+                if (res.confirm) {
+                    // Check Privacy (for compliance)
+                    if (wx.requirePrivacyAuthorize) {
+                        wx.requirePrivacyAuthorize({
+                            success: () => {
+                                that.doLogin();
+                            },
+                            fail: () => {
+                                wx.showToast({ title: '需要授权隐私协议', icon: 'none' });
+                            }
+                        })
+                    } else {
+                        that.doLogin();
+                    }
+                }
+            }
+        });
+    },
+
+    doLogin() {
+        wx.showLoading({ title: '登录中...' });
+        const app = getApp();
+        app.checkUserRole((isAdmin) => {
+            wx.hideLoading();
+            if (app.globalData.userInfo) {
+                this.setData({ isLoggedIn: true });
+                this.updateUserInfo(app.globalData.userInfo);
+                wx.showToast({ title: '登录成功' });
+            } else {
+                wx.showToast({ title: '登录失败', icon: 'none' });
+            }
+        });
+    },
+
+    updateUserInfo(userInfo) {
+        if (!userInfo) return;
+        this.setData({
+            username: userInfo.name,
+            roleName: userInfo.role === 'admin' ? '管理员' : '普通用户',
+            isAdmin: userInfo.role === 'admin',
+            userInfo // Store full obj
+        });
+    },
+
+    // [New] Modify Name
+    async onEditName() {
+        const _this = this;
+        wx.showModal({
+            title: '修改姓名',
+            editable: true,
+            placeholderText: '请输入真实姓名',
+            content: this.data.username,
+            success: async (res) => {
+                if (res.confirm && res.content) {
+                    const newName = res.content.trim();
+                    if (!newName) return;
+
+                    wx.showLoading({ title: '保存中' });
+                    try {
+                        // Use cloud function to update name (secure)
+                        const result = await wx.cloud.callFunction({
+                            name: 'updateUserName',
+                            data: { name: newName }
+                        });
+
+                        if (result.result.success) {
+                            // Update Local & Global
+                            _this.setData({ username: newName });
+                            getApp().globalData.userInfo.name = newName;
+                            wx.showToast({ title: '修改成功' });
+                        } else {
+                            wx.showToast({ title: result.result.errMsg || '修改失败', icon: 'none' });
+                        }
+
+                    } catch (e) {
+                        console.error(e);
+                        wx.showToast({ title: '修改失败', icon: 'none' });
+                    } finally {
+                        wx.hideLoading();
+                    }
+                }
+            }
+        })
     },
 
     async fetchOptions() {
@@ -172,5 +265,32 @@ Page({
     },
     toThreshold() {
         wx.navigateTo({ url: '/pages/threshold/threshold' })
+    },
+
+    // [New] Logout
+    onLogout() {
+        wx.showModal({
+            title: '确认退出',
+            content: '退出登录后需要重新登录才能进行出入库操作',
+            confirmText: '确认退出',
+            confirmColor: '#ef4444',
+            success: (res) => {
+                if (res.confirm) {
+                    const app = getApp();
+                    // Use app.logout() to clear token and global state
+                    app.logout();
+
+                    // Update local state
+                    this.setData({
+                        isLoggedIn: false,
+                        isAdmin: false,
+                        username: '',
+                        roleName: ''
+                    });
+
+                    wx.showToast({ title: '已退出登录', icon: 'success' });
+                }
+            }
+        });
     }
 })

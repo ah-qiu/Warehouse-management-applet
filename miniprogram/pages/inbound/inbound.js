@@ -46,7 +46,8 @@ Page({
         categoryModels: [],
         showModelSuggestions: false,
 
-        loading: false
+        loading: false,
+        isLoggedIn: false // [New]
     },
 
     onLoad() {
@@ -54,7 +55,14 @@ Page({
     },
 
     onShow() {
-        this.fetchOptions()
+        // [Guest Mode] Check Login
+        const app = getApp()
+        if (app.globalData.userInfo) {
+            this.setData({ isLoggedIn: true })
+            this.fetchOptions()
+        } else {
+            this.setData({ isLoggedIn: false })
+        }
     },
 
     async fetchOptions() {

@@ -1,4 +1,12 @@
 <view class="container">
+  <block wx:if="{{!isLoggedIn}}">
+     <view class="flex flex-col items-center justify-center p-8 mt-20">
+        <van-icon name="lock" size="64px" color="#e5e7eb" />
+        <view class="text-gray-500 mt-4 text-center">请先前往【我的】页面登录</view>
+        <view class="text-gray-400 text-xs mt-2">登录后方可进行出库操作</view>
+     </view>
+  </block>
+  <block wx:else>
   
   <!-- 顶部Tab -->
   <view class="segmented-control m-2 mb-0">
@@ -111,7 +119,7 @@
           </view>
       </view>
   </block>
-
+  </block>
 </view>
 
 <!-- Pickers (保持不变) -->

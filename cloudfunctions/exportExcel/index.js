@@ -54,9 +54,9 @@ exports.main = async (event, context) => {
         })
 
         // 2. Format Data for Excel
-        // Header: 产品类别 | 产品型号 | 产品批号 | 包装规格 | 入库日期 | 入库数量(公斤) | 入库性质 | 出库日期 | 出库数量(公斤) | 出库性质 | 库存数量(公斤)
+        // Header: 产品类别 | 产品型号 | 产品批号 | 包装规格 | 入库日期 | 入库数量(公斤) | 入库性质 | 出库日期 | 出库数量(公斤) | 出库性质 | 库存数量(公斤) | 操作人
         const tableData = [
-            ['产品类别', '产品型号', '产品批号', '包装规格', '入库日期', '入库数量(公斤)', '入库性质', '出库日期', '出库数量(公斤)', '出库性质', '库存数量(公斤)']
+            ['产品类别', '产品型号', '产品批号', '包装规格', '入库日期', '入库数量(公斤)', '入库性质', '出库日期', '出库数量(公斤)', '出库性质', '库存数量(公斤)', '操作人']
         ]
 
         records.forEach(record => {
@@ -72,7 +72,8 @@ exports.main = async (event, context) => {
                 !isIn ? record.operate_date : '',    // 出库日期
                 !isIn ? record.quantity_kg : '',     // 出库数量
                 !isIn ? record.nature : '',          // 出库性质
-                record.current_stock_snapshot        // 库存数量
+                record.current_stock_snapshot,       // 库存数量
+                record.operator_name || '未知'       // 操作人
             ]
             tableData.push(row)
         })

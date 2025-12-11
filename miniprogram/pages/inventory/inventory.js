@@ -1,5 +1,5 @@
 const app = getApp()
-const config = require('../../config');
+import config from '../../config';
 
 Page({
     data: {
@@ -221,6 +221,13 @@ Page({
     },
 
     goToLedger(e) {
+        // [Guest Mode] Intercept Detail View
+        const app = getApp()
+        if (!app.globalData.userInfo) {
+            wx.showToast({ title: '请先登录查看详情', icon: 'none' })
+            return
+        }
+
         const item = e.currentTarget.dataset.item
         // Pass essential info
         wx.navigateTo({
