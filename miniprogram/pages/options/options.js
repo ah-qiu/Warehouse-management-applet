@@ -42,7 +42,7 @@ Page({
             this.setData({
                 tabs: [
                     { title: '产品类别', id: 'category_list' },
-                    { title: '产品型号', id: 'spec_list' }, // Mapping 'spec_list' to model conceptually if needed, or just specific spec list
+                    { title: '产品规格', id: 'spec_list' }, // Mapping 'spec_list' to model conceptually if needed, or just specific spec list
                     { title: '入库性质', id: 'inbound_nature_list' },
                     { title: '出库性质', id: 'outbound_nature_list' }
                 ],
