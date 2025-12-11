@@ -1,0 +1,102 @@
+<view class="container p-4">
+  <view class="text-xl font-bold text-gray-800 mb-4">库存预警设置</view>
+  
+  <!-- Tabs -->
+  <!-- Tabs -->
+  <view class="segmented-control mb-4">
+      <view 
+          class="segmented-item {{ itemType === 'product' ? 'active' : '' }}"
+          bindtap="onTypeChange"
+          data-type="product"
+      >产品与材料</view>
+      <view 
+          class="segmented-item {{ itemType === 'package' ? 'active' : '' }}"
+          bindtap="onTypeChange"
+          data-type="package"
+      >包装物</view>
+  </view>
+
+  <!-- Search / Filter -->
+  <view class="card p-3 mb-4 flex gap-2 sticky top-0 z-10">
+      <view class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2">
+          <van-icon name="search" size="18px" color="#9ca3af" />
+          <input 
+              class="flex-1 ml-2 text-sm" 
+              placeholder="{{itemType === 'package' ? '搜索包装规格' : '搜索产品型号/类别'}}" 
+              confirm-type="search" 
+              bindconfirm="onSearchConfirm"
+              bindinput="onSearch" 
+              value="{{keyword}}"
+          />
+      </view>
+  </view>
+
+  <!-- Product List -->
+  <view wx:if="{{loading}}" class="flex justify-center py-10">
+      <van-loading size="24px" vertical>加载中...</van-loading>
+  </view>
+  
+  <view wx:else class="flex flex-col gap-3">
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="card flex justify-between items-center" bindtap="onEdit" data-item="{{item}}">
+        <view>
+          <view class="flex items-center gap-2">
+            <view class="text-lg font-bold text-gray-800">{{item.model}}</view>
+            <view class="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-500">{{item.category}}</view>
+          </view>
+          <view class="text-xs text-gray-400 mt-1">
+             当前库存: <text class="{{item.total_stock_kg < (item.warning_threshold || 100) ? 'text-red-500 font-bold' : ''}}">{{item.total_stock_kg}}{{itemType === 'package' ? '个' : 'kg'}}</text>
+          </view>
+        </view>
+        <view class="text-right">
+            <view class="text-xs text-gray-400">预警阈值</view>
+            <view class="text-xl font-bold text-blue-600">
+                {{item.warning_threshold || '未设置'}} <text class="text-xs text-gray-400 font-normal">{{itemType === 'package' ? '个' : 'kg'}}</text>
+            </view>
+        </view>
+      </view>
+    </block>
+    
+    <view wx:if="{{list.length === 0}}" class="text-center text-gray-400 py-10 mt-10">
+        <van-icon name="warning-o" size="48px" class="mb-2" />
+        <view>暂无{{itemType === 'package' ? '包装物' : '产品'}}数据</view>
+    </view>
+  </view>
+
+  <!-- Edit Popup -->
+  <van-popup show="{{ showEdit }}" bind:close="onCloseEdit" round position="bottom" custom-style="padding-bottom: 30px;">
+      <view class="p-4">
+          <view class="text-center font-bold text-lg mb-4">设置预警阈值</view>
+          <view class="bg-gray-50 p-4 rounded-lg mb-4">
+              <view class="flex justify-between mb-2">
+                  <view class="text-gray-500">产品型号</view>
+                  <view class="font-bold">{{editingItem.model}}</view>
+              </view>
+              <view class="flex justify-between">
+                   <view class="text-gray-500">当前库存</view>
+                   <view>{{editingItem.total_stock_kg}} {{itemType === 'package' ? '个' : 'kg'}}</view>
+              </view>
+          </view>
+          
+          <view class="mb-6">
+              <view class="text-sm text-gray-500 mb-2">预警数量 ({{itemType === 'package' ? '个' : 'kg'}})</view>
+              <view class="bg-gray-100 px-4 py-3 rounded-lg text-2xl font-bold flex items-center">
+                  <input 
+                      type="digit" 
+                      class="flex-1 h-full" 
+                      value="{{editValue}}" 
+                      bindinput="onInputEdit" 
+                      focus="{{showEdit}}"
+                      placeholder="输入数量"
+                  />
+                  <text class="text-gray-400 text-sm font-normal">{{itemType === 'package' ? '个' : 'kg'}}</text>
+              </view>
+              <view class="text-xs text-orange-500 mt-2">
+                  * 当库存低于此数值时，系统将进行高亮提醒
+              </view>
+          </view>
+          
+          <van-button type="info" block bind:click="saveThreshold" loading="{{saving}}">保存设置</van-button>
+      </view>
+  </van-popup>
+</view>

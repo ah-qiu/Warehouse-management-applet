@@ -1,0 +1,218 @@
+{
+    "previewTableName": "Products-preview",
+    "publishCacheStatus": "ready",
+    "subType": "database",
+    "schema": {
+        "x-primary-column": "_id",
+        "x-kind": "tcb",
+        "x-defaultMethods": [
+            "wedaCreate",
+            "wedaUpdate",
+            "wedaDelete",
+            "wedaGetItem",
+            "wedaGetRecords",
+            "wedaGetList",
+            "wedaBatchCreate",
+            "wedaBatchUpdate",
+            "wedaBatchDelete"
+        ],
+        "type": "object",
+        "x-relatedType": "exist",
+        "x-viewId": "view-7k69z341q8",
+        "required": [
+            "model",
+            "category"
+        ],
+        "properties": {
+            "owner": {
+                "default": "",
+                "x-system": true,
+                "x-id": "0038763",
+                "name": "owner",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所有人",
+                "x-index": 12,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "_mainDep": {
+                "x-system": true,
+                "x-id": "dc36ca7",
+                "name": "_mainDep",
+                "format": "father-son",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所属主管部门",
+                "x-index": 13,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_department"
+                }
+            },
+            "createdAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "88b6afb",
+                "format": "datetime",
+                "type": "number",
+                "title": "创建时间",
+                "x-index": 14,
+                "x-unique": false
+            },
+            "unit": {
+                "x-required": false,
+                "default": "公斤",
+                "x-keyPath": "",
+                "x-id": "b376a945",
+                "format": "",
+                "description": "固定单位",
+                "type": "string",
+                "x-index": 8,
+                "title": "公斤",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "createBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "95a1f7d",
+                "name": "createBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "创建人",
+                "x-index": 15,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "updateBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "93a079a",
+                "name": "updateBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "修改人",
+                "x-index": 16,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "_openid": {
+                "default": "",
+                "x-system": true,
+                "x-id": "aa58a0e",
+                "name": "_openid",
+                "format": "",
+                "pattern": "",
+                "description": "仅微信云开发下使用",
+                "type": "string",
+                "title": "记录创建者",
+                "x-index": 17,
+                "x-unique": false
+            },
+            "model": {
+                "x-required": true,
+                "x-keyPath": "",
+                "x-id": "6615f95a",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 4,
+                "title": "产品型号",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "_id": {
+                "x-system": true,
+                "x-id": "ab7d13f",
+                "format": "",
+                "type": "string",
+                "title": "数据标识",
+                "x-index": 18,
+                "x-unique": true
+            },
+            "category": {
+                "x-required": true,
+                "x-keyPath": "",
+                "x-id": "e7759fe9",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 2,
+                "title": "产品类别",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "warning_threshold": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "71a6a297",
+                "format": "",
+                "description": "",
+                "type": "number",
+                "x-index": 10,
+                "title": "预警阈值",
+                "x-unique": false
+            },
+            "total_stock_kg": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "fb549e28",
+                "format": "",
+                "numberCount": 0,
+                "description": "当前总库存 (公斤) - 随流水自动更新",
+                "type": "number",
+                "x-index": 6,
+                "title": "当前总库存",
+                "x-unique": false
+            },
+            "updatedAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "8a8287c",
+                "format": "datetime",
+                "type": "number",
+                "title": "更新时间",
+                "x-index": 19,
+                "x-unique": false
+            }
+        }
+    },
+    "dbInstanceType": "FLEXDB",
+    "title": "产品信息",
+    "prodDbInfo": null,
+    "name": "Products",
+    "dataHubName": "flexdb",
+    "dbLinkType": "internal",
+    "tableNameRule": "only_name",
+    "type": "database",
+    "previewDbInfo": null,
+    "updateTime": "2025-12-11T02:57:55",
+    "publishedTableName": "Products",
+    "id": "data-5dwv7tWg9",
+    "dbSourceType": "internal_flexdb",
+    "methods": [],
+    "fun": "{\"onlineVersion\": 2, \"onlinePublishAt\": 1765267421984}",
+    "publishStatus": 1,
+    "configuration": {}
+}

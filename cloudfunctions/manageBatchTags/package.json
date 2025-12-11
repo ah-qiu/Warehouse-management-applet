@@ -1,0 +1,11 @@
+{
+    "name": "manage-batch-tags",
+    "version": "1.0.0",
+    "description": "Manage tags for product batches",
+    "main": "index.js",
+    "author": "Antigravity",
+    "license": "MIT",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3"
+    }
+}

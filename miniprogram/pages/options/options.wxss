@@ -1,0 +1,18 @@
+.list-container {
+  padding-bottom: 80px;
+}
+.add-btn-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+.empty-tip {
+  text-align: center;
+  color: #999;
+  padding: 30px;
+}

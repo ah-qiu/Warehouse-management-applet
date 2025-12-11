@@ -1,0 +1,182 @@
+{
+    "previewTableName": "Options-preview",
+    "publishCacheStatus": "ready",
+    "subType": "database",
+    "schema": {
+        "x-primary-column": "config_id",
+        "x-kind": "tcb",
+        "x-defaultMethods": [
+            "wedaCreate",
+            "wedaUpdate",
+            "wedaDelete",
+            "wedaGetItem",
+            "wedaGetRecords",
+            "wedaGetList",
+            "wedaBatchCreate",
+            "wedaBatchUpdate",
+            "wedaBatchDelete"
+        ],
+        "type": "object",
+        "x-relatedType": "exist",
+        "x-viewId": "view-7k6jgie45c",
+        "required": [],
+        "properties": {
+            "owner": {
+                "default": "",
+                "x-system": true,
+                "x-id": "b13a8bf",
+                "name": "owner",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所有人",
+                "x-index": 4,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "_mainDep": {
+                "x-system": true,
+                "x-id": "0ffd5ed",
+                "name": "_mainDep",
+                "format": "father-son",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所属主管部门",
+                "x-index": 7,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_department"
+                }
+            },
+            "createdAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "fdd3413",
+                "format": "datetime",
+                "type": "number",
+                "title": "创建时间",
+                "x-index": 2,
+                "x-unique": false
+            },
+            "createBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "84b1589",
+                "name": "createBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "创建人",
+                "x-index": 5,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "updateBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "93a079a",
+                "name": "updateBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "修改人",
+                "x-index": 6,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "config_id": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "c1d12c96",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 12,
+                "title": "选项名",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "_openid": {
+                "default": "",
+                "x-system": true,
+                "x-id": "388f864",
+                "name": "_openid",
+                "format": "",
+                "pattern": "",
+                "description": "仅微信云开发下使用",
+                "type": "string",
+                "title": "记录创建者",
+                "x-index": 45,
+                "x-unique": false
+            },
+            "_id": {
+                "x-system": true,
+                "x-id": "068b5ef",
+                "format": "",
+                "type": "string",
+                "title": "数据标识",
+                "x-index": 1,
+                "x-unique": true
+            },
+            "items": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "7c617cb3",
+                "format": "",
+                "description": "",
+                "type": "array",
+                "x-index": 14,
+                "title": "子选项",
+                "items": {
+                    "format": "",
+                    "type": "string"
+                },
+                "x-unique": false
+            },
+            "updatedAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "85dd7d1",
+                "format": "datetime",
+                "type": "number",
+                "title": "更新时间",
+                "x-index": 3,
+                "x-unique": false
+            }
+        }
+    },
+    "dbInstanceType": "FLEXDB",
+    "title": "选项",
+    "prodDbInfo": null,
+    "name": "Options",
+    "dataHubName": "flexdb",
+    "dbLinkType": "internal",
+    "tableNameRule": "only_name",
+    "type": "database",
+    "previewDbInfo": null,
+    "updateTime": "2025-12-11T02:57:52",
+    "publishedTableName": "Options",
+    "id": "data-5dx00cEvE",
+    "dbSourceType": "internal_flexdb",
+    "methods": [],
+    "fun": "{\"onlineVersion\": 4, \"previewVersion\": 3, \"onlinePublishAt\": 1765282480277, \"prviewPublishAt\": 1765282480015}",
+    "publishStatus": 1,
+    "configuration": {}
+}

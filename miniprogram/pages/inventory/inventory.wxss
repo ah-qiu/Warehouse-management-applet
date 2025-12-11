@@ -1,0 +1,390 @@
+/* Pages/Inventory/inventory.wxss */
+page {
+  /* 配色方案：深邃商务蓝 - 专业、稳重、大气 */
+  --bg-base: #f8fafc; /* Slate 50 */
+  --primary-gradient-start: #1e3a8a; /* Blue 900 */
+  --primary-gradient-end: #2563eb;   /* Blue 600 */
+  --text-dark: #0f172a; 
+  --text-gray: #64748b; 
+  --card-shadow: 0 8rpx 24rpx rgba(148, 163, 184, 0.15);
+  --accent-color: #ef4444; 
+  
+  background-color: var(--bg-base);
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Roboto, 'PingFang SC', sans-serif;
+}
+
+.page-container {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* --- 背景与头部 --- */
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 380rpx; /* 减小高度，只包含分类按钮 */
+  background: linear-gradient(180deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  border-bottom-left-radius: 48rpx;
+  border-bottom-right-radius: 48rpx;
+  z-index: 0;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  padding: 0 32rpx;
+}
+
+.page-header {
+  padding-top: 30rpx;
+  padding-bottom: 30rpx; /* 减小间距 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-name {
+  color: rgba(255,255,255,0.6);
+  font-size: 24rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  margin-bottom: 8rpx;
+}
+
+.page-title {
+  color: #fff;
+  font-size: 60rpx;
+  font-weight: 900;
+  letter-spacing: 1rpx;
+}
+
+.header-right {
+  background: rgba(255,255,255,0.15);
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+/* --- 搜索栏 --- */
+.search-box-wrapper {
+  margin-bottom: 24rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
+  overflow: hidden;
+  height: 64rpx; /* Fixed height container */
+  display: flex; /* Flex layout to align children */
+  align-items: center;
+}
+
+.custom-search {
+  padding: 0 !important;
+  width: 100%;
+}
+
+.custom-search .van-search__content {
+  background-color: transparent !important;
+  padding: 0 20rpx !important;
+  height: 64rpx !important;
+}
+
+.custom-field {
+  height: 64rpx !important;
+  line-height: 64rpx !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.custom-search .van-cell {
+  padding: 0 !important;
+  height: 64rpx !important;
+  display: flex;
+  align-items: center;
+  background-color: transparent !important;
+}
+
+
+/* --- 筛选区 --- */
+.filter-section {
+  margin-bottom: 32rpx;
+  padding-top: 10rpx;
+}
+
+.filter-scroll {
+  display: flex;
+  white-space: nowrap;
+  height: 110rpx; /* 增加高度，容纳阴影 */
+  align-items: center;
+}
+
+.filter-capsule {
+  display: inline-flex;
+  padding: 13rpx 20rpx;
+  background: rgba(255,255,255,0.9);
+  border-radius: 100rpx;
+  margin-right: 20rpx;
+  color: #475569;
+  font-size: 28rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
+  transition: all 0.2s;
+  border: 2rpx solid transparent;
+}
+
+.filter-capsule.active {
+  background: #1e3a8a; /* Deep Blue base */
+  color: #fff;
+  border-color: #1e3a8a;
+  box-shadow: 0 8rpx 20rpx rgba(30, 58, 138, 0.3);
+  transform: translateY(-2rpx);
+}
+
+.spacer-right {
+  width: 40rpx;
+  flex-shrink: 0;
+}
+
+/* --- 列表标题 --- */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24rpx;
+  padding: 0 8rpx;
+}
+
+.list-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.list-subtitle {
+  font-size: 24rpx;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+/* --- 产品卡片 --- */
+.product-card {
+  position: relative;
+  background: #fff;
+  border-radius: 40rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transform: translateZ(0); /* Hardware accel */
+  transition: transform 0.1s;
+}
+
+.card-pressed {
+  transform: scale(0.98);
+}
+
+.card-content {
+  padding: 20rpx;
+  position: relative;
+  z-index: 2;
+}
+
+/* 顶部：型号和分类 */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32rpx;
+}
+
+.model-text {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.category-tag {
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 8rpx 20rpx;
+  border-radius: 12rpx;
+  white-space: nowrap;
+  margin-left: 16rpx;
+}
+
+/* 中部：数据 */
+.card-middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.data-block .label {
+  font-size: 22rpx;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.value-group {
+  display: flex;
+  align-items: baseline;
+}
+
+.stat-number {
+  font-size: 76rpx;
+  font-weight: 900;
+  color: #1e3a8a; /* Deep Blue for emphasis */
+  line-height: 0.9;
+  font-family: 'DIN Alternate', 'Impact', sans-serif;
+  letter-spacing: -4rpx;
+  text-shadow: 2rpx 2rpx 0rpx rgba(0,0,0,0.05);
+}
+
+.stat-number.text-danger {
+  color: var(--accent-color);
+}
+
+.stat-unit {
+  font-size: 24rpx;
+  color: var(--text-gray);
+  margin-left: 10rpx;
+  font-weight: 500;
+}
+
+.action-icon {
+  width: 64rpx;
+  height: 64rpx;
+  background: #f8fafc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 底部：辅助信息 */
+.card-bottom {
+  border-top: 2rpx solid #f1f5f9;
+  padding-top: 20rpx;
+  display: flex;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* 装饰元素 */
+.card-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10rpx;
+  background: linear-gradient(to bottom, #6366f1, #a5b4fc);
+  opacity: 0; /* Default hidden unless activeTab=1 or customized */
+}
+
+/* 警告状态 */
+.product-card.card-alert .card-accent {
+  opacity: 1;
+  background: linear-gradient(to bottom, #f43f5e, #fda4af);
+}
+
+.watermark-icon {
+  position: absolute;
+  right: -20rpx;
+  bottom: -20rpx;
+  font-size: 200rpx;
+  color: #f1f5f9;
+  z-index: 1;
+  opacity: 0.5;
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+/* Swipe Delete */
+.right-slot {
+  height: 100%;
+  width: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 10rpx; /* Gap between card and button */
+}
+
+.delete-btn {
+  height: 90%;
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(239, 68, 68, 0.4);
+}
+
+/* 状态展示 */
+.status-box {
+  padding: 100rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-circle {
+  width: 120rpx;
+  height: 120rpx;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.03);
+  margin-bottom: 24rpx;
+}
+
+.empty-tip {
+  color: #94a3b8;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+
+/* Glass Segmented Control Override */
+.segmented-control.glass {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 16rpx 32rpx; /* Match mx-4 mt-2 mb-2 approx */
+}
+
+.segmented-control.glass .segmented-item {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.segmented-control.glass .segmented-item.active {
+  background-color: #ffffff;
+  color: #1e3a8a; /* Deep blue text for contrast */
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}

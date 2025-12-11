@@ -1,0 +1,92 @@
+<view class="container">
+  <!-- Header Card -->
+  <view class="header-card">
+    <view class="text-gray-500 text-sm mb-4">{{dateRange}}</view>
+    
+    <view class="grid grid-cols-2 gap-4">
+        <view>
+            <view class="text-xs text-gray-500 mb-1">入库总量 ({{unit}})</view>
+            <view class="text-2xl font-bold text-green-600">{{summary.totalInbound}}</view>
+        </view>
+        <view>
+             <view class="text-xs text-gray-500 mb-1">出库总量 ({{unit}})</view>
+             <view class="text-2xl font-bold text-blue-600">{{summary.totalOutbound}}</view>
+        </view>
+        <view>
+            <view class="text-xs text-gray-500 mb-1">总单数</view>
+            <view class="text-xl font-bold text-gray-800">{{summary.count}}</view>
+        </view>
+        <view class="flex justify-end items-end">
+             <view class="bg-blue-50 p-2 rounded-lg">
+                <van-icon name="chart-trending-o" color="#2563eb" size="24px" />
+             </view>
+        </view>
+    </view>
+  </view>
+
+  <!-- Trend Chart -->
+  <view class="card mx-4 -mt-6 relative z-10">
+    <view class="flex items-center justify-between mb-6">
+       <view class="font-bold text-gray-800 text-lg">近期趋势</view>
+       <view class="text-xs text-gray-400">每日数量</view>
+    </view>
+    
+    <scroll-view scroll-x class="trend-scroll" enable-flex>
+      <view class="trend-container">
+        <block wx:for="{{dailyTrend}}" wx:key="date">
+           <view class="trend-item" bindtap="showTooltip" data-index="{{index}}">
+              <view class="trend-bar-wrapper">
+                 <view class="trend-bar" style="height: {{item.percentage}}%; background: {{index === activeIndex ? '#2563eb' : '#dbeafe'}}"></view>
+              </view>
+              <view class="trend-date {{index === activeIndex ? 'text-blue-600 font-bold' : ''}}">{{item.shortDate}}</view>
+              <view class="trend-tooltip" wx:if="{{index === activeIndex}}">
+                 {{item.totalQuantity}}
+              </view>
+           </view>
+        </block>
+        <view wx:if="{{dailyTrend.length === 0}}" class="text-center text-gray-400 w-full py-8">
+           暂无趋势数据
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- Category Analysis -->
+  <view class="card mx-4 mt-4">
+    <view class="flex items-center justify-between mb-6">
+       <view class="font-bold text-gray-800 text-lg">产品类别占比</view>
+       <view class="text-xs text-gray-400">Classification</view>
+    </view>
+    <block wx:for="{{categoryAnalysis}}" wx:key="category">
+       <view class="mb-3">
+          <view class="flex justify-between text-sm mb-1">
+             <text class="text-gray-700">{{item.category}}</text>
+             <text class="font-bold text-gray-900">{{item.totalQuantity}} {{unit}}</text>
+          </view>
+          <view class="bg-gray-100 h-2 rounded-full overflow-hidden">
+             <view class="bg-indigo-500 h-full rounded-full" style="width: {{item.percentage}}%"></view>
+          </view>
+       </view>
+    </block>
+     <view wx:if="{{categoryAnalysis.length === 0}}" class="text-center text-gray-400 py-4">无数据</view>
+  </view>
+
+  <!-- Nature Analysis -->
+  <view class="card mx-4 mt-4">
+     <view class="flex items-center justify-between mb-6">
+       <view class="font-bold text-gray-800 text-lg">出入库性质分析</view>
+       <view class="text-xs text-gray-400">Operation Nature</view>
+    </view>
+    <view class="grid grid-cols-2 gap-4">
+        <block wx:for="{{natureAnalysis}}" wx:key="nature">
+            <view class="bg-gray-50 p-3 rounded-lg">
+                <view class="text-xs text-gray-500 mb-1 truncate">{{item.nature}}</view>
+                <view class="text-lg font-bold text-blue-600">{{item.totalQuantity}}</view>
+            </view>
+        </block>
+    </view>
+    <view wx:if="{{natureAnalysis.length === 0}}" class="text-center text-gray-400 py-4">无数据</view>
+  </view>
+
+
+</view>

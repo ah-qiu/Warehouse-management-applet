@@ -1,0 +1,154 @@
+<view class="container p-4">
+  <!-- User Profile Card -->
+  <view class="card profile-card flex items-center gap-4 mb-4">
+    <image class="avatar-img" src="/images/Logo.png" mode="aspectFill"></image>
+    <view>
+      <view class="text-xl font-bold text-white">仓库管理员</view>
+      <view class="text-sm text-blue-100">{{companyName}}</view>
+    </view>
+  </view>
+
+  <block wx:if="{{isAdmin}}">
+       <view class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-2 mb-2">数据管理</view>
+       <view class="card p-0 overflow-hidden" style="padding: 0;">
+          <!-- Date Range Pickers -->
+          <view class="menu-item border-b border-gray-100">
+            <view class="flex items-center gap-3">
+               <view class="icon-box bg-blue-100 text-blue-600">
+                   <van-icon name="calendar-o" size="18px" />
+               </view>
+               <view>
+                   <view class="font-medium text-gray-800">按日期筛选</view>
+                   <view class="text-xs text-gray-400">开启后导出指定范围的记录</view>
+               </view>
+            </view>
+            <switch checked="{{enableDateFilter}}" bindchange="onFilterSwitchChange" color="#2563eb" style="transform: scale(0.8);" />
+          </view>
+    
+          <view class="menu-item border-b border-gray-100" wx:if="{{enableDateFilter}}">
+              <view style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+                    <view class="date-chip {{startDate ? 'active' : ''}}">
+                        {{ startDate || '开始日期' }}
+                    </view>
+                </picker>
+                <view class="date-separator"></view>
+                <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+                    <view class="date-chip {{endDate ? 'active' : ''}}">
+                        {{ endDate || '结束日期' }}
+                    </view>
+                </picker>
+              </view>
+          </view>
+
+       <!-- Item Type Filter -->
+      <view class="menu-item border-b border-gray-100">
+          <view class="flex items-center gap-3">
+            <view class="icon-box bg-indigo-100 text-indigo-600">
+                <van-icon name="apps-o" size="18px" />
+            </view>
+            <view>
+                <view class="font-medium text-gray-800">物品类型</view>
+                <view class="text-xs text-gray-400">当前选择: {{selectedItemType}}</view>
+            </view>
+          </view>
+          <picker range="{{itemTypeList}}" bindchange="onItemTypeChange">
+            <view class="text-sm text-blue-600 font-medium">
+                {{selectedItemType}} <van-icon name="arrow-down" />
+            </view>
+          </picker>
+      </view>
+    
+           <!-- Nature Filter -->
+          <view class="menu-item border-b border-gray-100">
+              <view class="flex items-center gap-3">
+                <view class="icon-box bg-purple-100 text-purple-600">
+                    <van-icon name="filter-o" size="18px" />
+                </view>
+                <view>
+                    <view class="font-medium text-gray-800">出入库性质</view>
+                    <view class="text-xs text-gray-400">当前选择: {{selectedNature}}</view>
+                </view>
+              </view>
+              <picker range="{{natureList}}" bindchange="onNatureChange">
+                <view class="text-sm text-blue-600 font-medium">
+                    {{selectedNature}} <van-icon name="arrow-down" />
+                </view>
+              </picker>
+          </view>
+    
+           <!-- Statistics Button -->
+          <view class="menu-item border-b border-gray-100" bindtap="onGetStatistics" hover-class="bg-gray-50">
+              <view class="flex items-center gap-3">
+                <view class="icon-box bg-orange-100 text-orange-600">
+                    <van-icon name="chart-trending-o" size="18px" />
+                </view>
+                <view>
+                    <view class="font-medium text-gray-800">统计数据</view>
+                    <view class="text-xs text-gray-400">查看所选条件下的统计信息</view>
+                </view>
+              </view>
+              <van-icon name="arrow" color="#d1d5db" />
+          </view>
+    
+          <!-- Statistics Popup -->
+          <van-popup show="{{ showStats }}" bind:close="onCloseStats" position="bottom" round custom-style="padding: 20px;">
+            <view class="text-center">
+                <view class="text-lg font-bold mb-4">统计结果</view>
+                <view class="grid grid-cols-2 gap-4 mb-6">
+                    <view class="bg-gray-50 p-4 rounded-lg">
+                        <view class="text-gray-500 text-sm mb-1">总数量(kg)</view>
+                        <view class="text-2xl font-bold text-blue-600">{{ statsResult.totalQuantity }}</view>
+                    </view>
+                    <view class="bg-gray-50 p-4 rounded-lg">
+                        <view class="text-gray-500 text-sm mb-1">记录条数</view>
+                        <view class="text-2xl font-bold text-green-600">{{ statsResult.count }}</view>
+                    </view>
+                </view>
+                <van-button type="info" block bind:click="onCloseStats">关闭</van-button>
+            </view>
+          </van-popup>
+    
+          <!-- Export Excel -->
+         <view class="menu-item border-b border-gray-100" bindtap="onExport" hover-class="bg-gray-50">
+            <view class="flex items-center gap-3">
+               <view class="icon-box bg-green-100 text-green-600">
+                  <van-icon name="description" size="18px" />
+               </view>
+               <view>
+                  <view class="font-medium text-gray-800">导出台账 Excel</view>
+                  <view class="text-xs text-gray-400">完整版进出仓存货台账</view>
+               </view>
+            </view>
+            <van-icon name="arrow" color="#d1d5db" />
+         </view>
+               <!-- New Warning Threshold Setting -->
+               <view class="menu-item border-b border-gray-100" bindtap="toThreshold" hover-class="bg-gray-50">
+            <view class="flex items-center gap-3">
+               <view class="icon-box bg-red-100 text-red-600">
+                   <van-icon name="warning-o" size="18px" />
+               </view>
+               <view>
+                   <view class="font-medium text-gray-800">库存预警设置</view>
+                   <view class="text-xs text-gray-400">设置产品最低库存阈值</view>
+               </view>
+            </view>
+            <van-icon name="arrow" color="#d1d5db" />
+          </view>
+          
+         <!-- Options Config -->
+         <view class="menu-item" bindtap="toOptions" hover-class="bg-gray-50">
+            <view class="flex items-center gap-3">
+               <view class="icon-box bg-indigo-100 text-indigo-700">
+                  <van-icon name="setting" size="18px" />
+               </view>
+               <view>
+                  <view class="font-medium text-gray-800">选项配置管理</view>
+                  <view class="text-xs text-gray-400">自定义类别、规格、出入库性质</view>
+               </view>
+            </view>
+            <van-icon name="arrow" color="#d1d5db" />
+         </view>
+       </view>
+  </block>
+</view>

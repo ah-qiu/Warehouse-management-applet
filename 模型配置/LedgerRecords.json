@@ -1,0 +1,261 @@
+{
+    "previewTableName": "LedgerRecords-preview",
+    "publishCacheStatus": "ready",
+    "subType": "database",
+    "schema": {
+        "x-primary-column": "_id",
+        "x-kind": "tcb",
+        "x-defaultMethods": [
+            "wedaCreate",
+            "wedaUpdate",
+            "wedaDelete",
+            "wedaGetItem",
+            "wedaGetRecords",
+            "wedaGetList",
+            "wedaBatchCreate",
+            "wedaBatchUpdate",
+            "wedaBatchDelete"
+        ],
+        "type": "object",
+        "x-relatedType": "exist",
+        "x-viewId": "view-7k6at0jqxs",
+        "required": [],
+        "properties": {
+            "owner": {
+                "default": "",
+                "x-system": true,
+                "x-id": "1764497",
+                "name": "owner",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所有人",
+                "x-index": 20,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "_mainDep": {
+                "x-system": true,
+                "x-id": "849e000",
+                "name": "_mainDep",
+                "format": "father-son",
+                "x-hidden": true,
+                "type": "string",
+                "title": "所属主管部门",
+                "x-index": 21,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_department"
+                }
+            },
+            "batch_number": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "294e1727",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 10,
+                "title": "产品批号",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "action_type": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "f4c44326",
+                "format": "",
+                "description": "\"in\"(入库) 或 \"out\"(出库)",
+                "type": "string",
+                "x-index": 8,
+                "title": "出入库",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "nature": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "37249686",
+                "format": "",
+                "description": "入库性质 或 出库性质",
+                "type": "string",
+                "x-index": 18,
+                "title": "出入库性质",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "package_spec": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "2d9e3da8",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 12,
+                "title": "包装规格",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "createdAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "dab8874",
+                "format": "datetime",
+                "type": "number",
+                "title": "创建时间",
+                "x-index": 22,
+                "x-unique": false
+            },
+            "createBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "8cde896",
+                "name": "createBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "创建人",
+                "x-index": 23,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "updateBy": {
+                "default": "",
+                "x-system": true,
+                "x-id": "93a079a",
+                "name": "updateBy",
+                "format": "father-son",
+                "pattern": "",
+                "x-hidden": true,
+                "type": "string",
+                "title": "修改人",
+                "x-index": 24,
+                "x-unique": false,
+                "x-parent": {
+                    "fatherAction": "judge",
+                    "type": "father-son",
+                    "parentDataSourceName": "sys_user"
+                }
+            },
+            "product_id": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "ef5f397b",
+                "format": "",
+                "description": "Products表的_id",
+                "type": "string",
+                "x-index": 2,
+                "title": "产品id",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "_openid": {
+                "default": "",
+                "x-system": true,
+                "x-id": "fa2a39e",
+                "name": "_openid",
+                "format": "",
+                "pattern": "",
+                "description": "仅微信云开发下使用",
+                "type": "string",
+                "title": "记录创建者",
+                "x-index": 25,
+                "x-unique": false
+            },
+            "current_stock_snapshot": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "da8ab8ae",
+                "format": "",
+                "description": "当前库存快照",
+                "type": "number",
+                "x-index": 16,
+                "title": "当前库存",
+                "x-unique": false
+            },
+            "_id": {
+                "x-system": true,
+                "x-id": "b07eca6",
+                "format": "",
+                "type": "string",
+                "title": "数据标识",
+                "x-index": 26,
+                "x-unique": true
+            },
+            "quantity_kg": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "4985774e",
+                "format": "",
+                "description": "",
+                "type": "number",
+                "x-index": 14,
+                "title": "数量 (公斤)",
+                "x-unique": false
+            },
+            "product_category": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "d761e19d",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 6,
+                "title": "产品类别",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "product_model": {
+                "x-required": false,
+                "x-keyPath": "",
+                "x-id": "eec5aa77",
+                "format": "",
+                "description": "",
+                "type": "string",
+                "x-index": 4,
+                "title": "产品型号",
+                "x-unique": false,
+                "maxLength": 256
+            },
+            "updatedAt": {
+                "default": 0,
+                "x-system": true,
+                "x-id": "01643b1",
+                "format": "datetime",
+                "type": "number",
+                "title": "更新时间",
+                "x-index": 27,
+                "x-unique": false
+            }
+        }
+    },
+    "dbInstanceType": "FLEXDB",
+    "title": "进出仓流水明细",
+    "prodDbInfo": null,
+    "name": "LedgerRecords",
+    "dataHubName": "flexdb",
+    "dbLinkType": "internal",
+    "tableNameRule": "only_name",
+    "type": "database",
+    "previewDbInfo": null,
+    "updateTime": "2025-12-11T02:57:54",
+    "publishedTableName": "LedgerRecords",
+    "id": "data-5dwxDQb9e",
+    "dbSourceType": "internal_flexdb",
+    "methods": [],
+    "fun": "{\"onlineVersion\": 2, \"onlinePublishAt\": 1765267863828}",
+    "publishStatus": 1,
+    "configuration": {}
+}

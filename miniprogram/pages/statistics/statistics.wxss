@@ -1,0 +1,95 @@
+/* miniprogram/pages/statistics/statistics.wxss */
+
+.header-card {
+  background: #ffffff;
+  padding: 48rpx 32rpx 80rpx 32rpx; /* Extra bottom padding for overlap */
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+}
+
+.card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+}
+
+.trend-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.trend-container {
+  display: flex;
+  align-items: flex-end;
+  height: 300rpx;
+  padding-top: 40rpx; /* Space for tooltip */
+}
+
+.trend-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 24rpx;
+  position: relative;
+  min-width: 60rpx;
+}
+
+.trend-bar-wrapper {
+  height: 200rpx;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 12rpx;
+  /* border-bottom: 1px solid #f3f4f6; */
+}
+
+.trend-bar {
+  width: 16rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.trend-date {
+  font-size: 20rpx;
+  color: #9ca3af;
+}
+
+.trend-tooltip {
+  position: absolute;
+  top: -10rpx; 
+  background: #1f2937;
+  color: white;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  transform: translateY(-100%);
+  white-space: nowrap;
+  animation: fadeIn 0.2s;
+}
+
+.trend-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6rpx;
+  border-width: 6rpx;
+  border-style: solid;
+  border-color: #1f2937 transparent transparent transparent;
+}
+
+/* Ranking Badges */
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-90%); }
+  to { opacity: 1; transform: translateY(-100%); }
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

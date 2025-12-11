@@ -1,0 +1,119 @@
+<view class="container p-4">
+  
+  <!-- Type Toggle -->
+  <view class="segmented-control mb-4">
+    <view 
+      class="segmented-item {{ itemType === 'product' ? 'active' : '' }}"
+      bindtap="onTypeChange"
+      data-type="product"
+    >产品与材料</view>
+    <view 
+      class="segmented-item {{ itemType === 'package' ? 'active' : '' }}"
+      bindtap="onTypeChange"
+      data-type="package"
+    >包装物</view>
+  </view>
+
+  <!-- Group 1: Product Info -->
+  <view class="card p-0 overflow-hidden">
+    <van-cell-group>
+      <van-cell title="入库日期" value="{{ formData.date }}" is-link bind:click="togglePicker" data-type="Date" />
+      <van-cell title="{{ itemType === 'package' ? '包装物类别' : '产品类别' }}" value="{{ formData.category || '请选择' }}" is-link bind:click="togglePicker" data-type="Category" />
+      
+      <block wx:if="{{ itemType === 'product' }}">
+        <view class="relative">
+          <van-field
+            label="产品型号"
+            title-width="6.2em"
+            placeholder="输入产品型号"
+            value="{{ formData.model }}"
+            data-field="model"
+            bind:change="onInput"
+            bind:focus="onFocusModel"
+            required
+          />
+          <!-- Suggestions List -->
+          <scroll-view 
+            wx:if="{{ showModelSuggestions && categoryModels.length > 0 }}" 
+            scroll-y 
+            class="suggestion-list"
+          >
+            <view 
+              wx:for="{{ categoryModels }}" 
+              wx:key="*this" 
+              class="suggestion-item" 
+              bindtap="selectModel" 
+              data-model="{{ item }}"
+            >
+              {{ item }}
+            </view>
+          </scroll-view>
+        </view>
+        <van-field
+          label="产品批号"
+          placeholder="输入产品批号"
+          value="{{ formData.batch }}"
+          data-field="batch"
+          bind:change="onInput"
+          required
+        />
+      </block>
+    </van-cell-group>
+  </view>
+
+  <!-- Group 2: Specs & Quantity -->
+  <view class="card p-0 overflow-hidden mt-4">
+    <van-cell-group>
+      <van-cell title="包装规格" value="{{ formData.spec || '请选择' }}" is-link bind:click="togglePicker" data-type="Spec" />
+      <van-cell title="入库性质" value="{{ formData.nature || '请选择' }}" is-link bind:click="togglePicker" data-type="Nature" />
+      
+      <van-field
+        label="入库数量"
+        placeholder="0"
+        type="digit"
+        value="{{ formData.quantity }}"
+        data-field="quantity"
+        bind:change="onInput"
+        required
+        use-button-slot
+        size="large"
+        input-class="font-bold text-lg"
+      >
+        <view slot="button" style="font-weight: bold; color: #6b7280;">{{ itemType === 'package' ? '个' : 'KG' }}</view>
+      </van-field>
+    </van-cell-group>
+  </view>
+
+  <view class="mt-8">
+    <button class="btn-primary w-full py-3 flex items-center justify-center gap-2" bindtap="onSubmit" disabled="{{ loading }}">
+       <text>确认提交入库</text>
+    </button>
+  </view>
+</view>
+
+<!-- Pickers -->
+<!-- Mask for suggestions -->
+<view wx:if="{{ showModelSuggestions }}" class="mask" bindtap="onCloseSuggestions"></view>
+
+<van-popup show="{{ showCategory }}" position="bottom" bind:close="onClosePicker" data-type="Category">
+  <van-picker show-toolbar columns="{{ categories }}" bind:cancel="onClosePicker" bind:confirm="onConfirmCategory" data-type="Category" />
+</van-popup>
+
+<van-popup show="{{ showSpec }}" position="bottom" bind:close="onClosePicker" data-type="Spec">
+  <van-picker show-toolbar columns="{{ specs }}" bind:cancel="onClosePicker" bind:confirm="onConfirmSpec" data-type="Spec" />
+</van-popup>
+
+<van-popup show="{{ showNature }}" position="bottom" bind:close="onClosePicker" data-type="Nature">
+  <van-picker show-toolbar columns="{{ inboundNature }}" bind:cancel="onClosePicker" bind:confirm="onConfirmNature" data-type="Nature" />
+</van-popup>
+
+<van-popup show="{{ showDate }}" position="bottom" bind:close="onClosePicker" data-type="Date">
+  <van-datetime-picker
+    type="date"
+    value="{{ currentDate }}"
+    min-date="{{ minDate }}"
+    bind:cancel="onClosePicker"
+    bind:confirm="onConfirmDate"
+    data-type="Date"
+  />
+</van-popup>

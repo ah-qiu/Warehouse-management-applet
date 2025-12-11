@@ -1,0 +1,128 @@
+<view class="container">
+  
+  <!-- 顶部Tab -->
+  <view class="segmented-control m-2 mb-0">
+    <view 
+      class="segmented-item {{ itemType === 'product' ? 'active' : '' }}"
+      bindtap="onTypeChange"
+      data-type="product"
+    >产品与材料</view>
+    <view 
+      class="segmented-item {{ itemType === 'package' ? 'active' : '' }}"
+      bindtap="onTypeChange"
+      data-type="package"
+    >包装物</view>
+  </view>
+
+  <!-- 1. 产品选择区域 -->
+  <block wx:if="{{ !selectedProduct }}">
+    <!-- 顶部固定区：搜索 + 筛选 -->
+    <view class="top-bar" style="top: 0; padding-top: 10rpx;">
+        <view class="search-wrap">
+            <van-search
+                value="{{ searchKeyword }}"
+                placeholder="{{ itemType === 'package' ? '搜索包装规格' : '搜索产品型号' }}"
+                shape="round"
+                background="#fff"
+                bind:change="onSearch"
+                bind:search="onSearchConfirm"
+            />
+        </view>
+        <!-- 分类Tab -->
+        <scroll-view scroll-x class="category-scroll" show-scrollbar="{{false}}">
+            <view 
+             class="cat-item {{ activeCategory === '全部' ? 'active' : '' }}" 
+             bindtap="setFilter" 
+             data-val="全部">全部</view>
+            <block wx:for="{{ categories }}" wx:key="*this">
+                <view 
+                 class="cat-item {{ activeCategory === item ? 'active' : '' }}" 
+                 bindtap="setFilter" 
+                 data-val="{{ item }}">{{ item }}</view>
+            </block>
+        </scroll-view>
+    </view>
+    
+    <!-- 列表区域 -->
+    <view class="list-wrap">
+        <block wx:for="{{ searchResult }}" wx:key="_id">
+            <view class="list-item" bindtap="onSelectProduct" data-product="{{ item }}">
+                <view class="item-main">
+                    <view class="item-model">{{ item.model }}</view>
+                    <view class="item-cat">{{ item.category }}</view>
+                </view>
+                <view class="item-side">
+                    <view class="stock-num {{ item.total_stock_kg <= 0 ? 'text-gray' : '' }}">{{ item.total_stock_kg }} <text class="unit">{{ itemType === 'package' ? '个' : 'KG' }}</text></view>
+                    <van-icon name="arrow" color="#ccc" size="16px" />
+                </view>
+            </view>
+        </block>
+        
+        <view wx:if="{{ !loading && searchResult.length === 0 }}" class="empty-view">
+            <text>暂无相关{{ itemType === 'package' ? '包装物' : '产品' }}</text>
+        </view>
+        <view wx:if="{{ loading }}" class="loading-view">
+            <van-loading size="24px" color="#1989fa" />
+        </view>
+    </view>
+  </block>
+
+  <!-- 2. 出库填写区域 -->
+  <block wx:else>
+      <view class="form-container">
+          <!-- 选中的产品简略信息 -->
+          <view class="selected-header">
+              <view class="sh-left">
+                  <view class="sh-label">当前出库{{ itemType === 'package' ? '包装物' : '产品' }}</view>
+                  <view class="sh-model">{{ selectedProduct.model }}</view>
+              </view>
+              <view class="sh-right">
+                  <view class="sh-stock">库存: {{ selectedProduct.total_stock_kg }} {{ itemType === 'package' ? '个' : 'KG' }}</view>
+                  <view class="reselect-text" bindtap="onClearSelection">重新选择</view>
+              </view>
+          </view>
+
+          <view class="form-body">
+              <van-cell-group inset>
+                <van-cell title="出库日期" value="{{ formData.date }}" is-link bind:click="togglePicker" data-type="Date" />
+                
+                <van-cell wx:if="{{ itemType !== 'package' }}" title="产品批号" value="{{ formData.batch || '请选择' }}" is-link bind:click="togglePicker" data-type="Batch" 
+                value-class="{{ !formData.batch ? 'placeholder-text' : 'value-text' }}" />
+                
+                <van-cell title="出库性质" value="{{ formData.nature || '请选择' }}" is-link bind:click="togglePicker" data-type="Nature" />
+
+                <van-field
+                    label="出库数量"
+                    type="digit"
+                    placeholder="请输入数量"
+                    value="{{ formData.quantity }}"
+                    bind:change="onInput"
+                    data-field="quantity"
+                    input-align="right"
+                    size="large"
+                >
+                    <text slot="right-icon">{{ itemType === 'package' ? '个' : 'KG' }}</text>
+                </van-field>
+              </van-cell-group>
+
+              <view class="btn-area">
+                  <van-button type="info" block round bind:click="onSubmit" disabled="{{ loading }}">确认出库</van-button>
+              </view>
+          </view>
+      </view>
+  </block>
+
+</view>
+
+<!-- Pickers (保持不变) -->
+<van-popup show="{{ showNature }}" position="bottom" round bind:close="onClosePicker" data-type="Nature">
+  <van-picker show-toolbar title="出库性质" columns="{{ outboundNature }}" bind:cancel="onClosePicker" bind:confirm="onConfirmNature" />
+</van-popup>
+
+<van-popup show="{{ showBatch }}" position="bottom" round bind:close="onClosePicker" data-type="Batch">
+  <van-picker show-toolbar title="选择批号" columns="{{ batchColumns }}" bind:cancel="onClosePicker" bind:confirm="onConfirmBatch" />
+</van-popup>
+
+<van-popup show="{{ showDate }}" position="bottom" round bind:close="onClosePicker" data-type="Date">
+  <van-datetime-picker type="date" value="{{ currentDate }}" min-date="{{ minDate }}" bind:cancel="onClosePicker" bind:confirm="onConfirmDate" />
+</van-popup>

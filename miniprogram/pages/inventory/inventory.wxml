@@ -1,0 +1,143 @@
+<view class="page-container">
+  
+  <!-- 顶部沉浸式背景 -->
+  <view class="header-bg"></view>
+
+  <view class="content-wrapper">
+    <!-- 头部：标题与统计 -->
+    <view class="page-header">
+      <view class="header-left">
+        <text class="app-name">{{appName}}</text>
+        <text class="page-title">库存总览</text>
+      </view>
+      <!-- 可选：这里可以放一个头像或设置图标 -->
+      <view class="header-right">
+        <van-icon name="apps-o" color="rgba(255,255,255,0.8)" size="24px" />
+      </view>
+    </view>
+
+    <!-- 顶部Tab -->
+    <view class="segmented-control glass">
+        <view 
+        class="segmented-item {{ itemType === 'product' ? 'active' : '' }}"
+        bindtap="onTypeChange"
+        data-type="product"
+        >产品与材料</view>
+        <view 
+        class="segmented-item {{ itemType === 'package' ? 'active' : '' }}"
+        bindtap="onTypeChange"
+        data-type="package"
+        >包装物</view>
+    </view>
+
+    <!-- 悬浮搜索栏 -->
+    <view class="search-box-wrapper">
+      <van-search
+        value="{{ keyword }}"
+        placeholder="{{ itemType === 'package' ? '输入规格或类别查找...' : '输入型号或名称查找...' }}"
+        shape="round"
+        background="transparent"
+        custom-class="custom-search"
+        field-class="custom-field"
+        bind:change="onSearch"
+        bind:search="onSearchConfirm"
+      />
+    </view>
+
+    <!-- 分类筛选 (胶囊风格) -->
+    <view class="filter-section">
+      <scroll-view scroll-x class="filter-scroll" enable-flex show-scrollbar="{{false}}">
+        <view 
+          class="filter-capsule {{ activeCategory === '全部' ? 'active' : '' }}" 
+          bindtap="setFilter" 
+          data-val="全部">
+          <text>全部</text>
+        </view>
+        <block wx:for="{{ categories }}" wx:key="*this">
+          <view 
+            class="filter-capsule {{ activeCategory === item ? 'active' : '' }}" 
+            bindtap="setFilter" 
+            data-val="{{ item }}">
+            <text>{{ item }}</text>
+          </view>
+        </block>
+        <view class="spacer-right"></view>
+      </scroll-view>
+    </view>
+
+    <!-- 列表内容区 -->
+    <view class="inventory-list">
+      <view class="list-header" wx:if="{{ inventoryList.length > 0 }}">
+        <text class="list-title">所有{{ itemType === 'package' ? '包装物' : '产品' }}</text>
+        <text class="list-subtitle">{{ inventoryList.length }} items</text>
+      </view>
+
+      <block wx:for="{{ inventoryList }}" wx:key="_id">
+        <van-swipe-cell right-width="{{ 65 }}" disabled="{{ !isAdmin }}" async-close bind:close="onSwipeClose">
+          <view 
+            class="product-card {{ (activeTab === 1 || item.total_stock_kg < (item.warning_threshold || 100)) ? 'card-alert' : '' }}" 
+            bindtap="goToLedger" 
+            data-item="{{ item }}"
+            hover-class="card-pressed"
+          >
+            <!-- 卡片左侧装饰条 -->
+            <view class="card-accent"></view>
+
+            <view class="card-content">
+              <!-- 顶部信息 -->
+              <view class="card-top">
+                 <view class="model-row">
+                   <text class="model-text">{{ item.model }}</text>
+                 </view>
+                 <view class="category-tag">{{ item.category }}</view>
+              </view>
+
+              <!-- 数据展示 -->
+              <view class="card-middle">
+                 <view class="data-block">
+                   <text class="label">当前库存</text>
+                   <view class="stat-value-row">
+                    <text class="stat-number {{ (activeTab === 1 || item.total_stock_kg < (item.warning_threshold || 100)) ? 'text-danger' : '' }}">{{ item.total_stock_kg }}</text>
+                    <text class="stat-unit">{{ itemType === 'package' ? '个' : 'KG' }}</text>
+                  </view>
+                 </view>
+                 <!-- 右侧图标导向 -->
+                 <view class="action-icon">
+                    <van-icon name="arrow" color="#cbd5e1" />
+                 </view>
+              </view>
+
+              <!-- 底部信息 -->
+              <view class="card-bottom">
+                 <van-icon name="clock-o" size="12px" style="margin-right: 4px;" />
+                 <text>更新于 {{ item.update_time_str || '-' }}</text>
+              </view>
+            </view>
+            
+            <!-- 背景水印 -->
+            <view class="watermark-icon">
+              <van-icon name="cube-o" />
+            </view>
+          </view>
+          <view slot="right" class="right-slot" catchtap="onDeleteProduct" data-item="{{ item }}">
+            <view class="delete-btn">删除</view>
+          </view>
+        </van-swipe-cell>
+      </block>
+
+      <!-- Loading & Empty -->
+      <view wx:if="{{ loading }}" class="status-box">
+        <van-loading type="spinner" color="#6366f1" />
+      </view>
+
+      <view wx:if="{{ !loading && inventoryList.length === 0 }}" class="status-box empty">
+         <view class="empty-circle">
+           <van-icon name="search" size="32px" color="#94a3b8" />
+         </view>
+         <text class="empty-tip">未找到匹配的库存</text>
+      </view>
+
+      <view class="bottom-spacer"></view>
+    </view>
+  </view>
+</view>

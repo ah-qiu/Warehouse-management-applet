@@ -1,0 +1,120 @@
+<view class="page-container">
+  
+  <view class="header-section">
+    <view class="product-info">
+      <view>
+        <view class="product-model" style="display: flex; align-items: center; gap: 8rpx;">
+            <text>{{ product.model }}</text>
+            <van-icon wx:if="{{isAdmin}}" name="edit" size="1.2em" catchtap="onEditModel" color="rgba(255,255,255,0.9)" />
+        </view>
+        <view class="product-tag">{{ product.category }}</view>
+      </view>
+      <view class="header-icon">
+        <van-icon name="chart-trending-o" size="32px" color="rgba(255,255,255,0.9)" />
+      </view>
+    </view>
+  </view>
+
+  <view class="list-title">
+      <text>现有库存批号</text>
+  </view>
+
+  <view class="list-section">
+    <block wx:for="{{ batchList }}" wx:key="batch">
+      <view class="record-card" bindtap="onItemClick" data-item="{{ item }}">
+        
+        <view class="card-left">
+          <view class="icon-box icon-in">
+             <van-icon name="bag-o" size="18px" color="#fff" />
+          </view>
+        </view>
+
+        <view class="card-center">
+          <!-- 产品显示批号 -->
+          <view class="batch-row" wx:if="{{ product.itemType !== 'package' }}">
+            <text class="batch-label">批号</text>
+            <text class="batch-num">{{ item.batch }}</text>
+          </view>
+          <!-- 包装物显示提示或为空 -->
+          <view class="batch-row" wx:else>
+            <text class="batch-label">规格</text>
+            <text class="batch-num" style="color: #64748b;">{{ product.model }}</text>
+          </view>
+          
+          <!-- Tags Section -->
+          <view class="tags-container">
+            <block wx:for="{{ item.tags }}" wx:for-item="tag" wx:key="*this">
+                <view class="tag-item" catchtap="onDeleteTag" data-batch="{{ item.batch }}" data-tag="{{ tag }}">
+                    <text>{{ tag }}</text>
+                    <van-icon name="cross" size="10px" color="#999" class="tag-close" />
+                </view>
+            </block>
+            <view class="tag-add" catchtap="onAddTag" data-batch="{{ item.batch }}">
+                <van-icon name="plus" size="12px" color="#1989fa" />
+                <text>标签</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="card-right">
+          <view class="amount-text text-blue">
+            {{ item.stock }} <text style="font-size: 0.8em;">{{ product.itemType === 'package' ? '个' : 'KG' }}</text>
+          </view>
+          <view class="stock-text">库存</view>
+          <view class="detail-btn" catchtap="onShowDetail" data-item="{{ item }}">
+             <text>明细</text> <van-icon name="arrow" />
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{ batchList.length === 0 }}" class="empty-state">
+      <van-icon name="description" size="48px" color="#ddd" />
+      <text>暂无库存批号</text>
+    </view>
+
+    <view class="footer-spacer"></view>
+  </view>
+
+  <!-- Detail Popup -->
+  <van-popup
+    show="{{ showDetailWithId }}"
+    position="bottom"
+    round
+    custom-style="height: 60%;"
+    bind:close="onCloseDetail"
+  >
+    <view class="detail-popup-content">
+        <view class="popup-header">
+            <text class="font-bold text-lg">流水明细</text>
+            <view class="text-sm text-gray-500 mt-1">{{ currentDetailBatch ? (product.itemType==='package' ? '无批号' : currentDetailBatch) : '' }}</view>
+        </view>
+        
+        <scroll-view scroll-y class="history-list">
+            <block wx:for="{{ historyList }}" wx:key="_id">
+                <view class="history-item">
+                    <view class="flex justify-between items-center mb-1">
+                        <view class="flex items-center gap-2">
+                            <view class="badge {{item.action_type === 'in' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}}">
+                                {{ item.action_type === 'in' ? '入库' : '出库' }}
+                            </view>
+                            <text class="font-medium text-gray-800">{{ item.quantity_kg }} {{ item.unit || (product.itemType==='package'?'个':'KG') }}</text>
+                        </view>
+                        <text class="text-xs text-gray-400">{{ item.operate_date }}</text>
+                    </view>
+                    <view class="flex justify-between items-center text-xs text-gray-500">
+                        <text>操作人: {{ item.operator_name || '未知' }}</text>
+                        <view wx:if="{{ isAdmin }}" class="delete-link" catchtap="onDeleteRecord" data-id="{{ item._id }}">删除</view>
+                    </view>
+                </view>
+            </block>
+            <view wx:if="{{ historyList.length === 0 && !loadingHistory }}" class="text-center text-gray-400 py-4">无记录</view>
+            <view wx:if="{{ loadingHistory }}" class="text-center text-gray-400 py-4">加载中...</view>
+        </scroll-view>
+    </view>
+  </van-popup>
+
+  <van-dialog id="van-dialog" />
+  
+
+</view>

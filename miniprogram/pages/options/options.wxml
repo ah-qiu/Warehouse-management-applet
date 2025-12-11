@@ -1,0 +1,54 @@
+<!-- Tabs Switcher -->
+<view class="segmented-control m-2">
+    <view 
+        class="segmented-item {{ itemType === 'product' ? 'active' : '' }}"
+        bindtap="onTypeChange"
+        data-type="product"
+    >产品与材料</view>
+    <view 
+        class="segmented-item {{ itemType === 'package' ? 'active' : '' }}"
+        bindtap="onTypeChange"
+        data-type="package"
+    >包装物</view>
+</view>
+
+<van-tabs active="{{ activeTab }}" bind:change="onTabChange" color="#07c160">
+  <block wx:for="{{ tabs }}" wx:key="id">
+    <van-tab title="{{ item.title }}">
+      <view class="list-container">
+        <van-cell-group>
+          <block wx:for="{{ lists[item.id] }}" wx:for-item="opt" wx:for-index="idx" wx:key="*this">
+            <van-cell title="{{ opt }}">
+              <view slot="right-icon" catchtap="deleteItem" data-item="{{ opt }}" data-index="{{ idx }}">
+                <van-icon name="delete" color="red" />
+              </view>
+            </van-cell>
+          </block>
+        </van-cell-group>
+        <view class="empty-tip" wx:if="{{ lists[item.id].length === 0 }}">暂无数据</view>
+        
+        <view class="add-btn-wrapper">
+           <van-button type="primary" block round bind:click="showAdd">新增选项</van-button>
+        </view>
+      </view>
+    </van-tab>
+  </block>
+</van-tabs>
+
+<van-dialog
+  use-slot
+  title="新增选项"
+  show="{{ showAddDialog }}"
+  show-cancel-button
+  bind:confirm="confirmAdd"
+  bind:close="onCloseDialog"
+>
+  <view style="padding: 20px;">
+    <input 
+      placeholder="请输入名称" 
+      value="{{ newItemValue }}" 
+      bindinput="onInput"
+      style="border-bottom: 1px solid #eee; padding: 10px;"
+    />
+  </view>
+</van-dialog>

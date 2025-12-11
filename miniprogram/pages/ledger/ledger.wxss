@@ -1,0 +1,264 @@
+/* pages/ledger/ledger.wxss */
+page {
+  background-color: #f7f8fa;
+  --primary-blue: #2563eb;
+  --accent-orange: #f97316;
+}
+
+/* 1. 顶部 Header */
+.header-section {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  padding: 40rpx 40rpx 60rpx; /* 底部留白给 filter 视觉过渡 */
+  color: #fff;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.product-model {
+  font-size: 48rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  margin-bottom: 16rpx;
+}
+
+.product-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 20rpx;
+  border-radius: 100rpx;
+  font-size: 24rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+/* 2. 标题区 */
+.list-title {
+  padding: 30rpx 40rpx 10rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 3. 列表卡片区 */
+.list-section {
+  padding: 0 30rpx;
+}
+
+.record-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.03);
+}
+
+/* 左侧图标 */
+.card-left {
+  margin-right: 24rpx;
+}
+
+.icon-box {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-in {
+  background-color: #eff6ff; /* 浅蓝底 */
+}
+/* 这里为了美观，图标背景可以用浅色，图标本身用深色，或者反过来 */
+.icon-in .van-icon { color: var(--primary-blue) !important; }
+
+.icon-out {
+  background-color: #fff7ed; /* 浅橙底 */
+}
+.icon-out .van-icon { color: var(--accent-orange) !important; }
+
+/* 中间信息 */
+.card-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.batch-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.batch-label {
+  font-size: 20rpx;
+  color: #999;
+  background: #f0f0f0;
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  margin-right: 10rpx;
+}
+
+.batch-num {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* (Removed info-row, date-text, nature-tag as they are no longer used) */
+
+/* 右侧数值 */
+.card-right {
+  text-align: right;
+  min-width: 140rpx; /* 防止数字抖动 */
+}
+
+.amount-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  font-family: monospace; /* 等宽字体让数字对齐更整齐 */
+  margin-bottom: 6rpx;
+}
+
+.text-blue { color: var(--primary-blue); }
+.text-orange { color: var(--accent-orange); }
+
+.stock-text {
+  font-size: 22rpx;
+  color: #aaa;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 100rpx 0;
+  text-align: center;
+  color: #ccc;
+  font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.footer-spacer {
+  height: 60rpx;
+}
+
+/* Tags Beautification */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #f0f0f0;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #1989fa;
+  background-color: #ecf9ff;
+  padding: 8rpx 20rpx;
+  border-radius: 999px; /* Pill shape */
+  border: 1rpx solid rgba(25, 137, 250, 0.1);
+  transition: all 0.2s;
+}
+
+.tag-item:active {
+  background-color: #dcf2ff;
+}
+
+.tag-close {
+  margin-left: 10rpx;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+}
+
+.tag-close:active {
+  opacity: 1;
+}
+
+.tag-add {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #64748b;
+  background-color: #f8fafc;
+  padding: 8rpx 20rpx;
+  border-radius: 999px;
+  border: 1rpx dashed #cbd5e1;
+  transition: all 0.2s;
+}
+
+.tag-add:active {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Detail Button */
+.detail-btn {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Detail Popup */
+.detail-popup-content {
+    padding: 32rpx;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-header {
+    border-bottom: 1rpx solid #f1f5f9;
+    padding-bottom: 24rpx;
+    margin-bottom: 16rpx;
+}
+
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 24rpx 0;
+    border-bottom: 1rpx dashed #e2e8f0;
+}
+
+.badge {
+    padding: 4rpx 12rpx;
+    border-radius: 8rpx;
+    font-size: 20rpx;
+    font-weight: 500;
+}
+
+.bg-green-100 { background-color: #dcfce7; }
+.text-green-700 { color: #15803d; }
+
+.bg-blue-100 { background-color: #dbeafe; }
+.text-blue-700 { color: #1d4ed8; }
+
+.delete-link {
+    color: #ef4444;
+    padding: 4rpx 12rpx;
+    border: 1rpx solid #fca5a5;
+    border-radius: 999px;
+    font-size: 20rpx;
+}
+.delete-link:active {
+    background-color: #fee2e2;
+}

@@ -1,0 +1,181 @@
+/* Pages/Outbound/outbound.wxss */
+page {
+  background-color: #f7f8fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
+  --primary: #1989fa;
+  --text-main: #323233;
+  --text-sub: #969799;
+}
+
+.container {
+  padding-bottom: 40rpx;
+}
+
+/* --- 顶部筛选区 --- */
+.top-bar {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1rpx solid #ebedf0;
+}
+
+.category-scroll {
+  white-space: nowrap;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cat-item {
+  display: inline-block;
+  padding: 10rpx 24rpx;
+  font-size: 28rpx;
+  color: var(--text-sub);
+  background: #f7f8fa;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.cat-item.active {
+  color: #fff;
+  background: var(--primary);
+  font-weight: 500;
+}
+
+/* --- 列表项 --- */
+.list-wrap {
+  padding: 20rpx;
+}
+
+.list-item {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.02);
+}
+
+.item-main {
+  flex: 1;
+}
+
+.item-model {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8rpx;
+}
+
+.item-cat {
+  font-size: 24rpx;
+  color: var(--text-sub);
+  background: #f2f3f5;
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.item-side {
+  text-align: right;
+  display: flex;
+  align-items: center;
+}
+
+.stock-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-right: 12rpx;
+}
+
+.stock-num.text-gray {
+  color: #ccc;
+}
+
+.unit {
+  font-size: 24rpx;
+  font-weight: 400;
+  color: var(--text-sub);
+}
+
+/* --- 空状态 --- */
+.empty-view, .loading-view {
+  padding: 60rpx 0;
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 28rpx;
+}
+
+/* --- 表单区域 --- */
+.form-container {
+  padding: 20rpx;
+}
+
+.selected-header {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.03);
+}
+
+.sh-left {
+  margin-bottom: 20rpx;
+}
+
+.sh-label {
+  font-size: 24rpx;
+  color: var(--text-sub);
+  margin-bottom: 8rpx;
+}
+
+.sh-model {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sh-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #ebedf0;
+  padding-top: 20rpx;
+}
+
+.sh-stock {
+  font-size: 28rpx;
+  color: #576b95;
+  font-weight: 500;
+}
+
+.reselect-text {
+  font-size: 26rpx;
+  color: var(--primary);
+}
+
+.form-body {
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.placeholder-text {
+  color: #c8c9cc !important;
+}
+
+.value-text {
+  color: var(--text-main) !important;
+  font-weight: 500;
+}
+
+.btn-area {
+  margin-top: 60rpx;
+  padding: 0 40rpx;
+}
