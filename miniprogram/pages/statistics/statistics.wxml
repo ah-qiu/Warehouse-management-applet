@@ -1,87 +1,162 @@
 <view class="container">
   <!-- Header Card -->
   <view class="header-card">
-    <view class="text-gray-500 text-sm mb-4">{{dateRange}}</view>
+    <view class="date-badge">
+      <van-icon name="calendar-o" size="14px" style="margin-right: 8rpx;" />
+      {{dateRange}}
+    </view>
     
-    <view class="grid grid-cols-2 gap-4">
-        <view>
-            <view class="text-xs text-gray-500 mb-1">入库总量 ({{unit}})</view>
-            <view class="text-2xl font-bold text-green-600">{{summary.totalInbound}}</view>
+    <view class="summary-grid">
+        <!-- 入库总量卡片 -->
+        <view class="stat-card stat-card-green">
+           <view class="stat-icon-wrapper green">
+              <van-icon name="down" color="#16a34a" size="20px" />
+           </view>
+           <view class="stat-content">
+              <view class="stat-label">入库总量</view>
+              <view class="stat-value green">{{summary.totalInbound}}</view>
+              <view class="stat-unit">{{unit}}</view>
+           </view>
         </view>
-        <view>
-             <view class="text-xs text-gray-500 mb-1">出库总量 ({{unit}})</view>
-             <view class="text-2xl font-bold text-blue-600">{{summary.totalOutbound}}</view>
+        
+        <!-- 出库总量卡片 -->
+        <view class="stat-card stat-card-blue">
+           <view class="stat-icon-wrapper blue">
+              <van-icon name="upgrade" color="#2563eb" size="20px" />
+           </view>
+           <view class="stat-content">
+              <view class="stat-label">出库总量</view>
+              <view class="stat-value blue">{{summary.totalOutbound}}</view>
+              <view class="stat-unit">{{unit}}</view>
+           </view>
         </view>
-        <view>
-            <view class="text-xs text-gray-500 mb-1">总单数</view>
-            <view class="text-xl font-bold text-gray-800">{{summary.count}}</view>
-        </view>
-        <view class="flex justify-end items-end">
-             <view class="bg-blue-50 p-2 rounded-lg">
-                <van-icon name="chart-trending-o" color="#2563eb" size="24px" />
-             </view>
+        
+        <!-- 总单数卡片 -->
+        <view class="stat-card stat-card-purple">
+           <view class="stat-icon-wrapper purple">
+              <van-icon name="orders-o" color="#7c3aed" size="20px" />
+           </view>
+           <view class="stat-content">
+              <view class="stat-label">总单数</view>
+              <view class="stat-value purple">{{summary.count}}</view>
+              <view class="stat-unit">笔</view>
+           </view>
         </view>
     </view>
   </view>
 
   <!-- Trend Chart -->
-  <view class="card mx-4 -mt-6 relative z-10">
-    <view class="flex items-center justify-between mb-6">
-       <view class="font-bold text-gray-800 text-lg">近期趋势</view>
-       <view class="text-xs text-gray-400">每日数量</view>
+  <view class="card mx-4 mt-4 category-card category-card-trend">
+    <view class="card-header">
+       <view class="card-title-wrapper">
+          <view class="card-icon trend">
+             <van-icon name="chart-trending-o" color="#0891b2" size="16px" />
+          </view>
+          <view class="font-bold text-gray-800 text-lg">近期趋势</view>
+       </view>
+       <view class="trend-period-switch">
+          <view 
+            class="period-btn {{trendPeriod === 'weekly' ? 'active' : ''}}"
+            data-period="weekly"
+            bindtap="onTrendPeriodChange">每周</view>
+          <view 
+            class="period-btn {{trendPeriod === 'monthly' ? 'active' : ''}}"
+            data-period="monthly"
+            bindtap="onTrendPeriodChange">每月</view>
+       </view>
     </view>
     
     <scroll-view scroll-x class="trend-scroll" enable-flex>
       <view class="trend-container">
-        <block wx:for="{{dailyTrend}}" wx:key="date">
+        <block wx:for="{{trendData}}" wx:key="period">
            <view class="trend-item" bindtap="showTooltip" data-index="{{index}}">
               <view class="trend-bar-wrapper">
-                 <view class="trend-bar" style="height: {{item.percentage}}%; background: {{index === activeIndex ? '#2563eb' : '#dbeafe'}}"></view>
+                 <view class="trend-bar" style="height: {{item.percentage}}%; background: {{index === activeIndex ? 'linear-gradient(180deg, #0891b2 0%, #06b6d4 100%)' : 'linear-gradient(180deg, #cffafe 0%, #a5f3fc 100%)'}}"></view>
               </view>
-              <view class="trend-date {{index === activeIndex ? 'text-blue-600 font-bold' : ''}}">{{item.shortDate}}</view>
+              <view class="trend-date {{index === activeIndex ? 'active' : ''}}">{{item.shortDate}}</view>
               <view class="trend-tooltip" wx:if="{{index === activeIndex}}">
-                 {{item.totalQuantity}}
+                 {{item.totalQuantity}} {{unit}}
               </view>
            </view>
         </block>
-        <view wx:if="{{dailyTrend.length === 0}}" class="text-center text-gray-400 w-full py-8">
+        <view wx:if="{{trendData.length === 0}}" class="text-center text-gray-400 w-full py-8">
            暂无趋势数据
         </view>
       </view>
     </scroll-view>
   </view>
 
-  <!-- Category Analysis -->
-  <view class="card mx-4 mt-4">
-    <view class="flex items-center justify-between mb-6">
-       <view class="font-bold text-gray-800 text-lg">产品类别占比</view>
-       <view class="text-xs text-gray-400">Classification</view>
+  <!-- Inbound Category Analysis -->
+  <view class="card mx-4 mt-4 category-card category-card-green">
+    <view class="card-header">
+       <view class="card-title-wrapper">
+          <view class="card-icon green">
+             <van-icon name="down" color="#16a34a" size="16px" />
+          </view>
+          <view class="font-bold text-gray-800 text-lg">入库类别占比</view>
+       </view>
+       <view class="card-badge green">Inbound</view>
     </view>
-    <block wx:for="{{categoryAnalysis}}" wx:key="category">
+    <block wx:for="{{inboundCategoryAnalysis}}" wx:key="category">
        <view class="mb-3">
           <view class="flex justify-between text-sm mb-1">
              <text class="text-gray-700">{{item.category}}</text>
-             <text class="font-bold text-gray-900">{{item.totalQuantity}} {{unit}}</text>
+             <text class="font-bold" style="color: #16a34a;">{{item.totalQuantity}} {{unit}}</text>
           </view>
-          <view class="bg-gray-100 h-2 rounded-full overflow-hidden">
-             <view class="bg-indigo-500 h-full rounded-full" style="width: {{item.percentage}}%"></view>
+          <view style="background: #e5e7eb; height: 16rpx; border-radius: 999rpx; overflow: hidden;">
+             <view style="background: #22c55e; height: 100%; border-radius: 999rpx; width: {{item.percentage}}%"></view>
           </view>
        </view>
     </block>
-     <view wx:if="{{categoryAnalysis.length === 0}}" class="text-center text-gray-400 py-4">无数据</view>
+     <view wx:if="{{inboundCategoryAnalysis.length === 0}}" class="text-center text-gray-400 py-4">无数据</view>
+  </view>
+
+  <!-- Outbound Category Analysis -->
+  <view class="card mx-4 mt-4 category-card category-card-blue">
+    <view class="card-header">
+       <view class="card-title-wrapper">
+          <view class="card-icon blue">
+             <van-icon name="upgrade" color="#2563eb" size="16px" />
+          </view>
+          <view class="font-bold text-gray-800 text-lg">出库类别占比</view>
+       </view>
+       <view class="card-badge blue">Outbound</view>
+    </view>
+    <block wx:for="{{outboundCategoryAnalysis}}" wx:key="category">
+       <view class="mb-3">
+          <view class="flex justify-between text-sm mb-1">
+             <text class="text-gray-700">{{item.category}}</text>
+             <text class="font-bold" style="color: #2563eb;">{{item.totalQuantity}} {{unit}}</text>
+          </view>
+          <view style="background: #e5e7eb; height: 16rpx; border-radius: 999rpx; overflow: hidden;">
+             <view style="background: #3b82f6; height: 100%; border-radius: 999rpx; width: {{item.percentage}}%"></view>
+          </view>
+       </view>
+    </block>
+     <view wx:if="{{outboundCategoryAnalysis.length === 0}}" class="text-center text-gray-400 py-4">无数据</view>
   </view>
 
   <!-- Nature Analysis -->
-  <view class="card mx-4 mt-4">
-     <view class="flex items-center justify-between mb-6">
-       <view class="font-bold text-gray-800 text-lg">出入库性质分析</view>
-       <view class="text-xs text-gray-400">Operation Nature</view>
+  <view class="card mx-4 mt-4 category-card category-card-purple">
+     <view class="card-header">
+       <view class="card-title-wrapper">
+          <view class="card-icon purple">
+             <van-icon name="exchange" color="#7c3aed" size="16px" />
+          </view>
+          <view class="font-bold text-gray-800 text-lg">出入库性质分析</view>
+       </view>
+       <view class="card-badge purple">Nature</view>
     </view>
-    <view class="grid grid-cols-2 gap-4">
+    <view class="nature-grid">
         <block wx:for="{{natureAnalysis}}" wx:key="nature">
-            <view class="bg-gray-50 p-3 rounded-lg">
-                <view class="text-xs text-gray-500 mb-1 truncate">{{item.nature}}</view>
-                <view class="text-lg font-bold text-blue-600">{{item.totalQuantity}}</view>
+            <view class="nature-item" style="background: linear-gradient(135deg, {{index % 4 === 0 ? '#fef3c7, #fde68a' : index % 4 === 1 ? '#dbeafe, #bfdbfe' : index % 4 === 2 ? '#dcfce7, #bbf7d0' : '#ede9fe, #ddd6fe'}});">
+                <view class="nature-icon" style="background: {{index % 4 === 0 ? '#f59e0b' : index % 4 === 1 ? '#3b82f6' : index % 4 === 2 ? '#22c55e' : '#7c3aed'}};">
+                   <van-icon name="{{index % 4 === 0 ? 'cart-o' : index % 4 === 1 ? 'send-gift-o' : index % 4 === 2 ? 'gift-o' : 'logistics'}}" color="white" size="14px" />
+                </view>
+                <view class="nature-content">
+                   <view class="nature-label truncate">{{item.nature}}</view>
+                   <view class="nature-value" style="color: {{index % 4 === 0 ? '#d97706' : index % 4 === 1 ? '#2563eb' : index % 4 === 2 ? '#16a34a' : '#7c3aed'}};">{{item.totalQuantity}}</view>
+                </view>
             </view>
         </block>
     </view>

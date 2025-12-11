@@ -1,19 +1,196 @@
 /* miniprogram/pages/statistics/statistics.wxss */
 
+/* ========== 页面容器 ========== */
+.container {
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* ========== 顶部卡片 ========== */
 .header-card {
-  background: #ffffff;
-  padding: 48rpx 32rpx 80rpx 32rpx; /* Extra bottom padding for overlap */
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  padding: 48rpx 32rpx 48rpx 32rpx;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
 }
 
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.summary-grid {
+  display: flex;
+  gap: 20rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  border-radius: 20rpx;
+  padding: 24rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-wrapper {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.stat-icon-wrapper.green {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+}
+
+.stat-icon-wrapper.blue {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.stat-icon-wrapper.purple {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+}
+
+.stat-content {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-bottom: 8rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-value.green {
+  color: #16a34a;
+}
+
+.stat-value.blue {
+  color: #2563eb;
+}
+
+.stat-value.purple {
+  color: #7c3aed;
+}
+
+.stat-unit {
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-top: 4rpx;
+}
+
+/* ========== 通用卡片 ========== */
 .card {
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
+/* ========== 类别占比卡片 ========== */
+.category-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8rpx;
+  border-radius: 24rpx 0 0 24rpx;
+}
+
+.category-card-green::before {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+}
+
+.category-card-blue::before {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.card-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.card-icon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon.green {
+  background: #dcfce7;
+}
+
+.card-icon.blue {
+  background: #dbeafe;
+}
+
+.card-badge {
+  font-size: 20rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.card-badge.green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.card-badge.blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+/* ========== 趋势卡片主题 ========== */
+.category-card-trend::before {
+  background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.card-icon.trend {
+  background: #cffafe;
+}
+
+.trend-date.active {
+  color: #0891b2;
+  font-weight: bold;
+}
+
+/* ========== 趋势图 ========== */
 .trend-scroll {
   width: 100%;
   white-space: nowrap;
@@ -23,7 +200,7 @@
   display: flex;
   align-items: flex-end;
   height: 300rpx;
-  padding-top: 40rpx; /* Space for tooltip */
+  padding-top: 40rpx;
 }
 
 .trend-item {
@@ -42,12 +219,11 @@
   align-items: flex-end;
   justify-content: center;
   margin-bottom: 12rpx;
-  /* border-bottom: 1px solid #f3f4f6; */
 }
 
 .trend-bar {
-  width: 16rpx;
-  border-radius: 8rpx;
+  width: 20rpx;
+  border-radius: 10rpx;
   transition: all 0.3s ease;
 }
 
@@ -58,15 +234,16 @@
 
 .trend-tooltip {
   position: absolute;
-  top: -10rpx; 
-  background: #1f2937;
+  top: -10rpx;
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
   color: white;
   font-size: 20rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 10rpx;
   transform: translateY(-100%);
   white-space: nowrap;
   animation: fadeIn 0.2s;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
 }
 
 .trend-tooltip::after {
@@ -74,22 +251,97 @@
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-left: -6rpx;
-  border-width: 6rpx;
+  margin-left: -8rpx;
+  border-width: 8rpx;
   border-style: solid;
-  border-color: #1f2937 transparent transparent transparent;
+  border-color: #374151 transparent transparent transparent;
 }
-
-/* Ranking Badges */
-
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-90%); }
   to { opacity: 1; transform: translateY(-100%); }
 }
 
+/* ========== 周期切换按钮 ========== */
+.trend-period-switch {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 16rpx;
+  padding: 4rpx;
+}
+
+.period-btn {
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+  color: #6b7280;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+}
+
+.period-btn.active {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  box-shadow: 0 2rpx 8rpx rgba(37, 99, 235, 0.3);
+}
+
+/* ========== 工具类 ========== */
 .truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========== 性质分析卡片 ========== */
+.category-card-purple::before {
+  background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%);
+}
+
+.card-icon.purple {
+  background: #ede9fe;
+}
+
+.card-badge.purple {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.nature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.nature-item {
+  padding: 24rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.nature-icon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nature-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.nature-label {
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+.nature-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.2;
 }

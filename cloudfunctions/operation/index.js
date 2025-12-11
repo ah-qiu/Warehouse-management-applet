@@ -112,7 +112,7 @@ exports.main = async (event, context) => {
                         model: data.model,
                         total_stock_kg: Number(data.quantity),
                         unit: unit,
-                        warning_threshold: 100, // Default
+                        warning_threshold: 0, // Default
                         updatedAt: db.serverDate(),
                         createdAt: db.serverDate(),
                         _openid: OPENID

@@ -2,15 +2,18 @@
 Page({
     data: {
         summary: { totalInbound: 0, totalOutbound: 0, count: 0 },
-        dailyTrend: [],
+        trendData: [],
 
-        categoryAnalysis: [],
+        inboundCategoryAnalysis: [],
+        outboundCategoryAnalysis: [],
         natureAnalysis: [],
         dateRange: '',
         nature: '全部',
         activeIndex: -1, // For trend tooltip
         loading: true,
-        unit: 'kg'
+        unit: 'kg',
+        trendPeriod: 'weekly', // 默认每周
+        queryParams: {} // 保存查询参数用于周期切换
     },
 
     onLoad(options) {
@@ -18,10 +21,23 @@ Page({
         this.setData({
             dateRange: startDate && endDate ? `${startDate} ~ ${endDate}` : '全部日期',
             nature: nature || '全部',
-            unit: itemType === 'package' ? '个' : 'kg'
+            unit: itemType === 'package' ? '个' : 'kg',
+            queryParams: options // 保存查询参数
         })
         // Pass itemType directly in payload
-        this.fetchStatistics(options)
+        this.fetchStatistics({ ...options, trendPeriod: 'weekly' })
+    },
+
+    // 切换趋势周期
+    onTrendPeriodChange(e) {
+        const period = e.currentTarget.dataset.period
+        if (period === this.data.trendPeriod) return // 避免重复点击
+
+        this.setData({ trendPeriod: period, loading: true })
+        this.fetchStatistics({
+            ...this.data.queryParams,
+            trendPeriod: period
+        })
     },
 
     async fetchStatistics(payload) {
@@ -36,27 +52,46 @@ Page({
             })
 
             if (res.result.success) {
-                const { summary, dailyTrend, categoryAnalysis, natureAnalysis } = res.result.data
+                const { summary, trendData, inboundCategoryAnalysis, outboundCategoryAnalysis, natureAnalysis } = res.result.data
 
                 // Process Trend Data for UI
-                const maxTrend = Math.max(...dailyTrend.map(d => d.totalQuantity), 1)
-                const processedTrend = dailyTrend.map(d => ({
+                const maxTrend = Math.max(...trendData.map(d => d.totalQuantity), 1)
+                const trendPeriod = payload.trendPeriod || 'weekly'
+                const processedTrend = trendData.map(d => {
+                    let shortDate
+                    if (trendPeriod === 'monthly') {
+                        // 2024-12 -> 2024-12
+                        shortDate = d.period
+                    } else {
+                        // 2024-12-09 -> 12/09
+                        shortDate = d.period.substring(5).replace('-', '/')
+                    }
+                    return {
+                        ...d,
+                        shortDate,
+                        percentage: (d.totalQuantity / maxTrend) * 100
+                    }
+                })
+
+                // Process Inbound Category Data for UI
+                const totalInCatQty = inboundCategoryAnalysis.reduce((acc, curr) => acc + curr.totalQuantity, 0) || 1
+                const processedInboundCat = inboundCategoryAnalysis.map(d => ({
                     ...d,
-                    shortDate: d.operate_date.substring(5), // 2023-12-01 -> 12-01
-                    percentage: (d.totalQuantity / maxTrend) * 100
+                    percentage: (d.totalQuantity / totalInCatQty) * 100
                 }))
 
-                // Process Category Data for UI
-                const totalCatQty = categoryAnalysis.reduce((acc, curr) => acc + curr.totalQuantity, 0) || 1
-                const processedCategory = categoryAnalysis.map(d => ({
+                // Process Outbound Category Data for UI
+                const totalOutCatQty = outboundCategoryAnalysis.reduce((acc, curr) => acc + curr.totalQuantity, 0) || 1
+                const processedOutboundCat = outboundCategoryAnalysis.map(d => ({
                     ...d,
-                    percentage: (d.totalQuantity / totalCatQty) * 100
+                    percentage: (d.totalQuantity / totalOutCatQty) * 100
                 }))
 
                 this.setData({
                     summary,
-                    dailyTrend: processedTrend,
-                    categoryAnalysis: processedCategory,
+                    trendData: processedTrend,
+                    inboundCategoryAnalysis: processedInboundCat,
+                    outboundCategoryAnalysis: processedOutboundCat,
                     natureAnalysis,
                     // Default select last item in trend
                     activeIndex: processedTrend.length - 1

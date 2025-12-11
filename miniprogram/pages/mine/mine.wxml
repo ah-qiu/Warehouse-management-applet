@@ -152,7 +152,6 @@
             <view class="flex items-center gap-3">
                <view class="icon-box bg-red-100 text-red-600">
                    <van-icon name="warning-o" size="18px" />
-                   <van-icon name="warning-o" size="18px" />
                </view>
                <view>
                    <view class="font-medium text-gray-800">库存预警设置</view>

@@ -76,7 +76,7 @@ exports.main = async (event, context) => {
             let agg = db.collection('Products').aggregate()
                 .match(matchStage)
                 .addFields({
-                    thresholdVals: $.ifNull(['$warning_threshold', 100])
+                    thresholdVals: $.ifNull(['$warning_threshold', 0])
                 })
                 .addFields({
                     isLow: $.lt(['$total_stock_kg', '$thresholdVals'])

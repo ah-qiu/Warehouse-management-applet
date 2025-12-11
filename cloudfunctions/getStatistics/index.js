@@ -7,7 +7,7 @@ const $ = db.command.aggregate
 
 exports.main = async (event, context) => {
     try {
-        const { startDate, endDate, nature, itemType } = event
+        const { startDate, endDate, nature, itemType, trendPeriod = 'weekly' } = event
 
         // 1. Match Stage
         const matchStage = {}
@@ -68,50 +68,122 @@ exports.main = async (event, context) => {
             }
         }
 
-        // 3. Aggregate Daily Trend (Total Quantity of matches)
-        const trendRes = await db.collection('LedgerRecords')
-            .aggregate()
-            .match(matchStage)
-            .group({
-                _id: '$operate_date',
-                totalQuantity: $.sum('$quantity_kg')
-            })
-            .sort({ _id: 1 })
-            .limit(30)
-            .end()
+        // 3. Aggregate Trend (按周或月分组)
+        // 先获取所有匹配记录的日期和数量，然后在 JS 中按周/月分组
+        let allTrendRecords = []
+        let trendPage = 0
+        const MAX_TREND = 100
 
-        const dailyTrend = trendRes.list.map(item => ({
-            operate_date: item._id,
-            totalQuantity: Math.round(item.totalQuantity * 100) / 100
-        }))
+        while (true) {
+            const trendRes = await db.collection('LedgerRecords')
+                .aggregate()
+                .match(matchStage)
+                .group({
+                    _id: '$operate_date',
+                    totalQuantity: $.sum('$quantity_kg')
+                })
+                .sort({ _id: 1 })
+                .skip(trendPage * MAX_TREND)
+                .limit(MAX_TREND)
+                .end()
+
+            allTrendRecords = allTrendRecords.concat(trendRes.list)
+            if (trendRes.list.length < MAX_TREND) break
+            trendPage++
+        }
+
+        // 按周或月聚合
+        const trendMap = {}
+
+        for (const record of allTrendRecords) {
+            const dateStr = record._id // 格式: "2024-12-01" 或 "2024-12-01 10:30:00"
+            const datePart = dateStr.substring(0, 10) // 取 YYYY-MM-DD
+
+            let periodKey
+            if (trendPeriod === 'monthly') {
+                // 按月分组: "2024-12"
+                periodKey = datePart.substring(0, 7)
+            } else {
+                // 按周分组: 计算该日期所在周的周日
+                const date = new Date(datePart)
+                const day = date.getDay()
+                const diff = date.getDate() + (7 - day) % 7 // 计算到周日的天数
+                const sunday = new Date(date)
+                sunday.setDate(day === 0 ? date.getDate() : date.getDate() + (7 - day))
+                const mm = String(sunday.getMonth() + 1).padStart(2, '0')
+                const dd = String(sunday.getDate()).padStart(2, '0')
+                periodKey = `${sunday.getFullYear()}-${mm}-${dd}`
+            }
+
+            if (!trendMap[periodKey]) {
+                trendMap[periodKey] = 0
+            }
+            trendMap[periodKey] += record.totalQuantity
+        }
+
+        // 转换为数组并排序
+        const trendData = Object.entries(trendMap)
+            .map(([period, totalQuantity]) => ({
+                period,
+                totalQuantity: Math.round(totalQuantity * 100) / 100
+            }))
+            .sort((a, b) => a.period.localeCompare(b.period))
+            .slice(-12) // 最多显示最近12个周期
 
 
 
-        // 5. Category Analysis
-        // 5. Category Analysis
-        let allCats = []
-        let catPage = 0
+        // 5. Category Analysis - 分别统计入库和出库
+        // 5.1 入库类别分析
+        let allInboundCats = []
+        let inCatPage = 0
         const MAX_CAT = 100
 
         while (true) {
             const catRes = await db.collection('LedgerRecords')
                 .aggregate()
-                .match(matchStage)
+                .match({ ...matchStage, action_type: 'in' })
                 .group({
                     _id: '$product_category',
                     totalQuantity: $.sum('$quantity_kg')
                 })
-                .sort({ totalQuantity: -1, _id: 1 }) // Stable sort
-                .skip(catPage * MAX_CAT)
+                .sort({ totalQuantity: -1, _id: 1 })
+                .skip(inCatPage * MAX_CAT)
                 .limit(MAX_CAT)
                 .end()
 
-            allCats = allCats.concat(catRes.list)
+            allInboundCats = allInboundCats.concat(catRes.list)
             if (catRes.list.length < MAX_CAT) break
-            catPage++
+            inCatPage++
         }
 
-        const categoryAnalysis = allCats.map(item => ({
+        const inboundCategoryAnalysis = allInboundCats.map(item => ({
+            category: item._id,
+            totalQuantity: Math.round(item.totalQuantity * 100) / 100
+        }))
+
+        // 5.2 出库类别分析
+        let allOutboundCats = []
+        let outCatPage = 0
+
+        while (true) {
+            const catRes = await db.collection('LedgerRecords')
+                .aggregate()
+                .match({ ...matchStage, action_type: 'out' })
+                .group({
+                    _id: '$product_category',
+                    totalQuantity: $.sum('$quantity_kg')
+                })
+                .sort({ totalQuantity: -1, _id: 1 })
+                .skip(outCatPage * MAX_CAT)
+                .limit(MAX_CAT)
+                .end()
+
+            allOutboundCats = allOutboundCats.concat(catRes.list)
+            if (catRes.list.length < MAX_CAT) break
+            outCatPage++
+        }
+
+        const outboundCategoryAnalysis = allOutboundCats.map(item => ({
             category: item._id,
             totalQuantity: Math.round(item.totalQuantity * 100) / 100
         }))
@@ -136,8 +208,9 @@ exports.main = async (event, context) => {
             success: true,
             data: {
                 summary: summaryData,
-                dailyTrend,
-                categoryAnalysis,
+                trendData,
+                inboundCategoryAnalysis,
+                outboundCategoryAnalysis,
                 natureAnalysis
             }
         }
