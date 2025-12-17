@@ -1,9 +1,30 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
 node_modules/
 miniprogram_npm/
+
+# WeChat Mini Program
 project.private.config.json
-npm-debug.log
-.DS_Store
+project.lock.json
+
+# Editors
 .idea/
 .vscode/
-*.log
+*.swp
+*.nw
+
+# Tooling
+.agent/
+.amazonq/
+openspec/
+AGENTS.md
+
+# Documentation
 保存用户登录状态规范.md
