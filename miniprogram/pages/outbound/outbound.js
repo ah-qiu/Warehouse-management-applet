@@ -340,6 +340,34 @@ Page({
             return
         }
 
+        // [New] Validate against specific batch stock
+        if (this.data.itemType !== 'package' && batch) {
+            const selectedBatch = this.data.batchList.find(item => item.batch === batch)
+            if (selectedBatch) {
+                if (Number(quantity) > selectedBatch.stock) {
+                    wx.showToast({ title: '批次库存不足', icon: 'none' })
+                    return
+                }
+            }
+        }
+
+        // Prepare confirmation content
+        let content = ''
+        if (this.data.itemType === 'package') {
+            content = `确认出库包装物？\r\n\r\n规格: ${product.model}\r\n数量: ${quantity} 个\r\n性质: ${nature}\r\n日期: ${date}`
+        } else {
+            content = `确认出库产品？\r\n\r\n型号: ${product.model}\r\n批号: ${batch}\r\n数量: ${quantity} KG\r\n性质: ${nature}\r\n日期: ${date}`
+        }
+
+        const modalRes = await wx.showModal({
+            title: '确认出库',
+            content: content,
+            confirmText: '确认提交',
+            cancelText: '取消'
+        })
+
+        if (!modalRes.confirm) return
+
         this.setData({ loading: true })
         wx.showLoading({ title: '提交中' })
 

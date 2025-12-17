@@ -44,7 +44,7 @@
     "swc": false,
     "disableSWC": true
   },
-  "appid": "",
+  "appid": "wxb84af5e04fc272c2",
   "projectname": "generic-inventory-template",
   "libVersion": "3.11.3",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
